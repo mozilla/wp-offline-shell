@@ -84,8 +84,10 @@ class SW_Cache_Admin {
     </tr>
     </table>
 
+    <?php submit_button(__('Save Changes'), 'primary'); ?>
+
     <h2><?php _e('Theme Files to Cache', 'wpswcache'); ?> (<code><?php echo get_template(); ?></code>)</h2>
-    <p><?php _e('Select theme files that are used on a majority of pages.', 'wpswcache'); ?></p>
+    <p><?php _e('Select theme assets (typically JavaScript, CSS, fonts, and image files) that are used on a majority of pages.', 'wpswcache'); ?></p>
     <div style="max-height: 300px;background:#fefefe;border:1px solid #ccc;padding:10px;overflow-y:auto;">
       <table class="form-table">
       <?php
@@ -93,7 +95,7 @@ class SW_Cache_Admin {
         $theme_files = $this->scan_theme_dir($template_abs_path);
 
         foreach($theme_files as $file) {
-          $file_relative = str_replace(get_theme_root(), '', $file);
+          $file_relative = str_replace(get_theme_root().'/'.get_template().'/', '', $file);
       ?>
         <tr>
           <td style="width: 30px;">
