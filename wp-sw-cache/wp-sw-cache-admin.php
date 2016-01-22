@@ -34,8 +34,20 @@ class SW_Cache_Admin {
 
   <form method="post" action="">
     <h2><?php _e('Enable ServiceWorker Cache', 'wpswcache'); ?></h2>
-    <li>[checkbox] Option to enable or disable the service worker</li>
-    <li>[textbox] Cache Name:</li>
+    <table class="form-table">
+    <tr>
+      <th scope="row"><label for="wp_sw_cache_enabled"><?php _e('Enable Service Worker?', 'wpswcache'); ?></label></th>
+      <td>
+        <input type="checkbox" name="wp_sw_cache_enabled" id="wp_sw_cache_enabled" value="1" autofocus />
+      </td>
+    </tr>
+    <tr>
+      <th scope="row"><label for="wp_sw_cache_name"><?php _e('Cache Prefix?', 'wpswcache'); ?></label></th>
+      <td>
+        <input type="text" name="wp_sw_cache_name" id="wp_sw_cache_name" value="" />
+      </td>
+    </tr>
+    </table>
 
     <h2><?php _e('Files to Cache', 'wpswcache'); ?></h2>
     <p><?php _e('Select files that are used on a majority of pages.', 'wpswcache'); ?></p>
