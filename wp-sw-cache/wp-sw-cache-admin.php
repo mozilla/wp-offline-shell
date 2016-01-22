@@ -123,12 +123,10 @@ class SW_Cache_Admin {
     <tr>
       <th scope="row"><label for="wp_sw_cache_name"><?php _e('Cache Prefix?', 'wpswcache'); ?></label></th>
       <td>
-        <input type="text" name="wp_sw_cache_name" id="wp_sw_cache_name" value="<?php echo esc_attr__(get_option('wp_sw_cache_name')); ?>" required />
+        <input type="text" name="wp_sw_cache_name" id="wp_sw_cache_name" value="<?php echo esc_attr__(get_option('wp_sw_cache_name')); ?>" class="regular-text ltr" required />
       </td>
     </tr>
     </table>
-
-    <?php submit_button(__('Save Changes'), 'primary'); ?>
 
     <h2><?php _e('Theme Files to Cache', 'wpswcache'); ?> (<code><?php echo get_template(); ?></code>)</h2>
     <p><?php _e('Select theme assets (typically JavaScript, CSS, fonts, and image files) that are used on a majority of pages.', 'wpswcache'); ?></p>
