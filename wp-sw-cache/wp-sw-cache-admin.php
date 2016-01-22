@@ -95,7 +95,7 @@ class SW_Cache_Admin {
 
   <?php if(get_option('wp_sw_cache_enabled') && !count($selected_files)) { ?>
     <div class="error">
-      <?php _e('Service Worker is enabled but no files have been selected for caching.  To take full advantage of this plugin, please select files to cache.'); ?>
+      <p><?php _e('Service Worker is enabled but no files have been selected for caching.  To take full advantage of this plugin, please select files to cache.'); ?></p>
     </div>
   <?php } ?>
 
