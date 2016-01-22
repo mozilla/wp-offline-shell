@@ -89,26 +89,50 @@ class SW_Cache_Admin {
     <h2><?php _e('Theme Files to Cache', 'wpswcache'); ?> (<code><?php echo get_template(); ?></code>)</h2>
     <p><?php _e('Select theme assets (typically JavaScript, CSS, fonts, and image files) that are used on a majority of pages.', 'wpswcache'); ?></p>
     <div style="max-height: 300px;background:#fefefe;border:1px solid #ccc;padding:10px;overflow-y:auto;">
-      <table class="form-table">
+
       <?php
         $template_abs_path = get_template_directory();
         $theme_files = $this->scan_theme_dir($template_abs_path);
+        $categories = array(
+          array('title' => __('CSS Files', 'wpswcache'), 'extensions' => array('css'), 'files' => array()),
+          array('title' => __('JavaScript Files', 'wpswcache'), 'extensions' => array('js'), 'files' => array()),
+          array('title' => __('Font Files', 'wpswcache'), 'extensions' => array('woff', 'woff2', 'ttf'), 'files' => array()),
+          array('title' => __('Image Files', 'wpswcache'), 'extensions' => array('svg', 'jpg', 'jpeg', 'gif', 'png', 'webp'), 'files' => array()),
+          array('title' => __('Other Files', 'wpswcache'), 'extensions' => array('*'), 'files' => array()) // Needs to be last
+        );
 
+        // Sort the files and place them in their baskets
         foreach($theme_files as $file) {
           $file_relative = str_replace(get_theme_root().'/'.get_template().'/', '', $file);
-      ?>
-        <tr>
-          <td style="width: 30px;">
-            <input type="checkbox" name="wp_sw_cache_files[]" id="wp_sw_cache_files['<?php echo $file_relative; ?>']" value="<?php echo $file_relative; ?>" />
-          </td>
-          <td>
-            <label for="wp_sw_cache_files['<?php echo $file_relative; ?>']"><?php echo $file_relative; ?></label>
-          </td>
-        </tr>
-      <?php
+          $path_info = pathinfo($file_relative);
+          $file_category_found = false;
+
+          foreach($categories as $index=>$category) {
+            if(in_array(strtolower($path_info['extension']), $category['extensions']) || ($file_category_found === false && $category['extensions'][0] === '*')) {
+              $categories[$index]['files'][] = $file_relative;
+              $file_category_found = true;
+            }
+          }
         }
-      ?>
-      </table>
+
+        foreach($categories as $category) { ?>
+          <h3><?php echo $category['title']; ?> (<?php echo implode(', ', $category['extensions']); ?>)</h3>
+          <?php if(count($category['files'])) { ?>
+          <table>
+            <?php foreach($category['files'] as $file) { ?>
+            <tr>
+              <td style="width: 30px;">
+                <input type="checkbox" name="wp_sw_cache_files[]" id="wp_sw_cache_files['<?php echo $file; ?>']" value="<?php echo $file; ?>" />
+              </td>
+              <td>
+                <label for="wp_sw_cache_files['<?php echo $file; ?>']"><?php echo $file; ?></label>
+              </td>
+            </tr>
+            <?php } ?>
+          </table>
+          <?php } else { ?><p><?php _e('No matching files found.', 'wpswcache'); ?></p><?php } ?>
+
+        <?php } ?>
     </div>
 
     <?php submit_button(__('Save Changes'), 'primary'); ?>
