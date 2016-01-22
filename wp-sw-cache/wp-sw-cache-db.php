@@ -3,7 +3,7 @@
 class SW_Cache_DB {
 
   private static $instance;
-  private static $cache_prefix = 'wp-sw-cache';
+  public $cache_prefix = 'wp-sw-cache';
 
   public function __construct() {
   }

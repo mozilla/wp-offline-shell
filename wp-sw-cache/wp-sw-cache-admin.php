@@ -59,6 +59,19 @@ class SW_Cache_Admin {
 
   function options() {
 
+    // Form submission
+    if(isset($_POST['form_submitted'])) {
+      // Update "enabled" status
+      update_option('wp_sw_cache_enabled', isset($_POST['wp_sw_cache_enabled']));
+      // Update "prefix" value
+      if(isset($_POST['wp_sw_cache_name'])) {
+        update_option('wp_sw_cache_name', $_POST['wp_sw_cache_name']);
+      }
+      else {
+        update_option('wp_sw_cache_name', SW_Cache_DB::$cache_prefix);
+      }
+    }
+
 ?>
 
 <div class="wrap">
@@ -68,18 +81,20 @@ class SW_Cache_Admin {
   <p><?php _e('WordPress Service Worker Cache is a ultility that harnesses the power of the <a href="https://serviceworke.rs" target="_blank">ServiceWorker API</a> to cache frequently used assets for the purposes of performance and offline viewing.'); ?></p>
 
   <form method="post" action="">
+    <input type="hidden" name="form_submitted" value="1">
+
     <h2><?php _e('Enable ServiceWorker Cache', 'wpswcache'); ?></h2>
     <table class="form-table">
     <tr>
       <th scope="row"><label for="wp_sw_cache_enabled"><?php _e('Enable Service Worker?', 'wpswcache'); ?></label></th>
       <td>
-        <input type="checkbox" name="wp_sw_cache_enabled" id="wp_sw_cache_enabled" value="1" autofocus />
+        <input type="checkbox" name="wp_sw_cache_enabled" id="wp_sw_cache_enabled" value="1" <?php if(get_option('wp_sw_cache_enabled')) echo 'checked'; ?> autofocus />
       </td>
     </tr>
     <tr>
       <th scope="row"><label for="wp_sw_cache_name"><?php _e('Cache Prefix?', 'wpswcache'); ?></label></th>
       <td>
-        <input type="text" name="wp_sw_cache_name" id="wp_sw_cache_name" value="" />
+        <input type="text" name="wp_sw_cache_name" id="wp_sw_cache_name" value="<?php echo get_option('wp_sw_cache_name'); ?>" required />
       </td>
     </tr>
     </table>
