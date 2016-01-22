@@ -19,8 +19,8 @@ class SW_Cache_DB {
   public static function on_activate() {
     // Set default options.
     update_option('wp_sw_cache_enabled', false);
-    update_option('wp_sw_cache_name', $this->$cache_prefix); // TODO:  What should we call this by defualt?
-    update_option('wp_sw_cache_files', array()); // TODO:  How do we want to structure this file list?
+    update_option('wp_sw_cache_name', $this->$cache_prefix);
+    update_option('wp_sw_cache_files', array());
   }
 
   public static function on_deactivate() {

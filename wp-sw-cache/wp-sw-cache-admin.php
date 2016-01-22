@@ -70,6 +70,18 @@ class SW_Cache_Admin {
       else {
         update_option('wp_sw_cache_name', SW_Cache_DB::$cache_prefix);
       }
+      // Update files to cache
+      if(isset($_POST['wp_sw_cache_files'])) {
+        update_option('wp_sw_cache_files', $_POST['wp_sw_cache_files']);
+      }
+      else {
+        update_option('wp_sw_cache_files', array());
+      }
+    }
+
+    $selected_files = get_option('wp_sw_cache_files');
+    if(!$selected_files) {
+      $selected_files = array();
     }
 
 ?>
@@ -137,7 +149,7 @@ class SW_Cache_Admin {
             <?php foreach($category['files'] as $file) { ?>
             <tr>
               <td style="width: 30px;">
-                <input type="checkbox" name="wp_sw_cache_files[]" id="wp_sw_cache_files['<?php echo $file; ?>']" value="<?php echo $file; ?>" />
+                <input type="checkbox" name="wp_sw_cache_files[]" id="wp_sw_cache_files['<?php echo $file; ?>']" value="<?php echo $file; ?>" <?php if(in_array($file, $selected_files)) { echo 'checked'; } ?> />
               </td>
               <td>
                 <label for="wp_sw_cache_files['<?php echo $file; ?>']"><?php echo $file; ?></label>
