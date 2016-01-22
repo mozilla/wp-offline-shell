@@ -59,8 +59,13 @@ class SW_Cache_Admin {
 
   function options() {
 
+    $submitted = false;
+
     // Form submission
     if(isset($_POST['form_submitted'])) {
+
+      $submitted = true;
+
       // Update "enabled" status
       update_option('wp_sw_cache_enabled', isset($_POST['wp_sw_cache_enabled']));
       // Update "prefix" value
@@ -88,6 +93,18 @@ class SW_Cache_Admin {
 
 <div class="wrap">
 
+  <?php if(get_option('wp_sw_cache_enabled') && !count($selected_files)) { ?>
+    <div class="error">
+      <?php _e('Service Worker is enabled but no files have been selected for caching.  To take full advantage of this plugin, please select files to cache.'); ?>
+    </div>
+  <?php } ?>
+
+  <?php if($submitted) { ?>
+    <div class="updated">
+      <p><?php _e('Your settings have been saved.'); ?></p>
+    </div>
+  <?php } ?>
+
   <h1><?php _e('WordPress Service Worker Cache', 'wpswcache'); ?></h1>
 
   <p><?php _e('WordPress Service Worker Cache is a ultility that harnesses the power of the <a href="https://serviceworke.rs" target="_blank">ServiceWorker API</a> to cache frequently used assets for the purposes of performance and offline viewing.'); ?></p>
@@ -106,7 +123,7 @@ class SW_Cache_Admin {
     <tr>
       <th scope="row"><label for="wp_sw_cache_name"><?php _e('Cache Prefix?', 'wpswcache'); ?></label></th>
       <td>
-        <input type="text" name="wp_sw_cache_name" id="wp_sw_cache_name" value="<?php echo get_option('wp_sw_cache_name'); ?>" required />
+        <input type="text" name="wp_sw_cache_name" id="wp_sw_cache_name" value="<?php echo esc_attr__(get_option('wp_sw_cache_name')); ?>" required />
       </td>
     </tr>
     </table>
