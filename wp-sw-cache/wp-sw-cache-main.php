@@ -16,10 +16,6 @@ class SW_Cache_Main {
     add_action('parse_request', array($this, 'on_parse_request'));
   }
 
-  public function get_this_plugins_base() {
-    return '/wp-content/plugins/wp-sw-cache';
-  }
-
   public static function init() {
     if (!self::$instance) {
       self::$instance = new self();
@@ -40,12 +36,15 @@ class SW_Cache_Main {
 
   public function register() {
     $contents = file_get_contents(dirname(__FILE__).'/lib/service-worker-registration.html');
-    $contents = str_replace('$path', $this->get_this_plugins_base(), $contents);
+    $contents = str_replace('$path', plugins_url('', __FILE__).'/lib', $contents);
     echo $contents;
   }
 
   public function on_parse_request() {
-    if($_SERVER['REQUEST_URI'] === $this->get_this_plugins_base().'/sw.js') {
+
+    // TODO:  The relative path to the file really needs to be dynamic, not hardcoded
+    // This is bad
+    if($_SERVER['REQUEST_URI'] === '/wp-content/plugins/wp-sw-cache/lib/sw.js') {
       header('Content-Type: application/javascript');
       echo file_get_contents(dirname(__FILE__).'/lib/service-worker.js');
       exit();
