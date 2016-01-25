@@ -11,8 +11,13 @@ class SW_Cache_Main {
   public function __construct() {
     if($this->show_header()) {
       add_action('wp_head', array($this, 'register')); // TODO:  Find out why "wp_footer" isn't working
-      add_action('parse_request', array($this, 'on_parse_request'));
     }
+
+    add_action('parse_request', array($this, 'on_parse_request'));
+  }
+
+  public function get_this_plugins_base() {
+    return '/wp-content/plugins/wp-sw-cache';
   }
 
   public static function init() {
@@ -35,12 +40,16 @@ class SW_Cache_Main {
 
   public function register() {
     $contents = file_get_contents(dirname(__FILE__).'/lib/service-worker-registration.html');
-    $contents = str_replace('$path', '/wp-content/plugins/wp-sw-cache', $contents);
+    $contents = str_replace('$path', $this->get_this_plugins_base(), $contents);
     echo $contents;
   }
 
-  public function on_parse_request($query) {
-
+  public function on_parse_request() {
+    if($_SERVER['REQUEST_URI'] === $this->get_this_plugins_base().'/sw.js') {
+      header('Content-Type: application/javascript');
+      echo file_get_contents(dirname(__FILE__).'/lib/service-worker.js');
+      exit();
+    }
   }
 
   public function output_sw_js() {
