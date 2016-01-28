@@ -8,6 +8,7 @@ class SW_Cache_Admin {
   public function __construct() {
     add_action('admin_menu', array($this, 'on_admin_menu'));
     add_action('admin_notices', array($this, 'on_admin_notices'));
+    add_action('after_switch_theme', array($this, 'on_switch_theme'));
   }
 
   public static function init() {
@@ -20,12 +21,24 @@ class SW_Cache_Admin {
     // TODO:  Add notice that if the plugin is activated but no files are selected, nothing is happening
 
     if(get_option('wp_sw_cache_enabled') && !count(get_option('wp_sw_cache_files'))) {
-      echo '<div class="error"><p>',  __('Service Worker is enabled but no files have been selected for caching.  To take full advantage of this plugin, please select files to cache.'), '</p></div>';
+      echo '<div class="update-nag is-dismissable"><p>',  __('Service Worker is enabled but no files have been selected for caching.  To take full advantage of this plugin, please select files to cache.'), '</p></div>';
     }
   }
 
   public function on_admin_menu() {
     add_options_page(__('WP SW Cache', 'wpswcache'), __('WP SW Cache', 'wpswcache'), 'manage_options', 'wp-sw-cache-options', array($this, 'options'));
+  }
+
+  public function on_switch_theme() {
+    if(get_option('wp_sw_cache_enabled')) {
+      update_option('wp_sw_cache_enabled', false);
+      update_option('wp_sw_cache_files', array());
+      add_action('admin_notices', array($this, 'show_switch_theme_message'));
+    }
+  }
+
+  function show_switch_theme_message() {
+    echo '<div class="update-nag is-dismissable"><p>',  __('You\'ve changed themes; please update your WP ServiceWorker Cache options.'), '</p></div>';
   }
 
   // http://php.net/manual/en/function.scandir.php#109140
