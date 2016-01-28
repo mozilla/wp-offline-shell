@@ -3,7 +3,7 @@
 class SW_Cache_DB {
 
   private static $instance;
-  public $cache_prefix = 'wp-sw-cache';
+  public static $cache_prefix = 'wp-sw-cache';
 
   public function __construct() {
   }
@@ -19,7 +19,7 @@ class SW_Cache_DB {
   public static function on_activate() {
     // Set default options.
     update_option('wp_sw_cache_enabled', false);
-    update_option('wp_sw_cache_name', $this->$cache_prefix);
+    update_option('wp_sw_cache_name', $this->$cache_prefix.'-'.time());
     update_option('wp_sw_cache_files', array());
   }
 

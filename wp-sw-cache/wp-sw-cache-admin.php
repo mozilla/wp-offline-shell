@@ -85,13 +85,15 @@ class SW_Cache_Admin {
 
       // Update "enabled" status
       update_option('wp_sw_cache_enabled', isset($_POST['wp_sw_cache_enabled']));
+
       // Update "prefix" value
       if(isset($_POST['wp_sw_cache_name'])) {
         update_option('wp_sw_cache_name', $_POST['wp_sw_cache_name']);
       }
       else {
-        update_option('wp_sw_cache_name', SW_Cache_DB::$cache_prefix);
+        update_option('wp_sw_cache_name', SW_Cache_DB::$cache_prefix.'-'.time());
       }
+
       // Update files to cache
       if(isset($_POST['wp_sw_cache_files'])) {
         update_option('wp_sw_cache_files', $_POST['wp_sw_cache_files']);
@@ -126,15 +128,16 @@ class SW_Cache_Admin {
     <h2><?php _e('Enable ServiceWorker Cache', 'wpswcache'); ?></h2>
     <table class="form-table">
     <tr>
-      <th scope="row"><label for="wp_sw_cache_enabled"><?php _e('Enable Service Worker?', 'wpswcache'); ?></label></th>
+      <th scope="row"><label for="wp_sw_cache_enabled"><?php _e('Enable Service Worker', 'wpswcache'); ?></label></th>
       <td>
         <input type="checkbox" name="wp_sw_cache_enabled" id="wp_sw_cache_enabled" value="1" <?php if(get_option('wp_sw_cache_enabled')) echo 'checked'; ?> autofocus />
       </td>
     </tr>
     <tr>
-      <th scope="row"><label for="wp_sw_cache_name"><?php _e('Cache Prefix?', 'wpswcache'); ?></label></th>
+      <th scope="row"><label for="wp_sw_cache_name"><?php _e('Cache Name', 'wpswcache'); ?></label></th>
       <td>
-        <input type="text" name="wp_sw_cache_name" id="wp_sw_cache_name" value="<?php echo esc_attr__(get_option('wp_sw_cache_name')); ?>" class="regular-text ltr" required />
+        <input type="text" name="wp_sw_cache_name" id="wp_sw_cache_name" value="<?php echo esc_attr__(get_option('wp_sw_cache_name')); ?>" class="regular-text ltr" disabled />
+        <?php _e('(Will update upon save for cache-busting purposes.)'); ?>
       </td>
     </tr>
     </table>
