@@ -24,7 +24,7 @@ class SW_Cache_Admin {
       echo '<div class="update-nag"><p>',  __('Service Worker is enabled but no files have been selected for caching.  To take full advantage of this plugin, please select files to cache.'), '</p></div>';
     }
 
-    if($_SERVER['REQUEST_SCHEME'] != 'https') {
+    if(get_option('wp_sw_cache_enabled') && $_SERVER['REQUEST_SCHEME'] != 'https') {
       echo '<div class="error"><p>The ServiceWorker API requires HTTPS and you are on HTTP.  Your Service Worker will not work.</p></div>';
     }
   }
