@@ -41,7 +41,7 @@ class SW_Cache_Main {
   }
 
   public function on_parse_request() {
-    // TODO:  The relative path to the file really needs to be dynamic, not hardcoded
+    // TODO:  The relative path to the "sw.js" file really needs to be dynamic, not hardcoded
     // This is bad
     if($_SERVER['REQUEST_URI'] === '/wp-content/plugins/wp-sw-cache/lib/sw.js') {
       header('Content-Type: application/javascript');
@@ -51,13 +51,6 @@ class SW_Cache_Main {
       echo $contents;
       exit();
     }
-  }
-
-  public function output_sw_js() {
-    header('Content-Type: application/javascript');
-
-    require_once(plugin_dir_path(__FILE__) . 'lib/js/sw.php');
-    exit();
   }
 }
 

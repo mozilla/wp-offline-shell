@@ -129,7 +129,7 @@ class SW_Cache_Admin {
   <form method="post" action="">
     <input type="hidden" name="form_submitted" value="1">
 
-    <h2><?php _e('Enable ServiceWorker Cache', 'wpswcache'); ?></h2>
+    <h2><?php _e('ServiceWorker Cache Settings', 'wpswcache'); ?></h2>
     <table class="form-table">
     <tr>
       <th scope="row"><label for="wp_sw_cache_enabled"><?php _e('Enable Service Worker', 'wpswcache'); ?></label></th>
