@@ -41,12 +41,14 @@ class SW_Cache_Main {
   }
 
   public function on_parse_request() {
-
     // TODO:  The relative path to the file really needs to be dynamic, not hardcoded
     // This is bad
     if($_SERVER['REQUEST_URI'] === '/wp-content/plugins/wp-sw-cache/lib/sw.js') {
       header('Content-Type: application/javascript');
-      echo file_get_contents(dirname(__FILE__).'/lib/service-worker.js');
+      $contents = file_get_contents(dirname(__FILE__).'/lib/service-worker.js');
+      $contents = str_replace('$name', get_option('wp_sw_cache_name'), $contents);
+      $contents = str_replace('$files', json_encode(get_option('wp_sw_cache_files')), $contents);
+      echo $contents;
       exit();
     }
   }

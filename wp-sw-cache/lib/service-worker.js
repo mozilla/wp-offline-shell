@@ -1,7 +1,6 @@
+var CACHE_NAME = '$name';
 
-var CACHE_NAME = ''; // TODO: Get cache name from plugin
-
-var CACHE_FILES = []; // TODO:  Get cache files from plugin
+var CACHE_FILES = $files;
 
 self.addEventListener('install', function(event) {
   // Perform install step:  loading each required file into cache
