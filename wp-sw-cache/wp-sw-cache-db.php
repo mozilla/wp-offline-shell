@@ -19,7 +19,7 @@ class SW_Cache_DB {
   public static function on_activate() {
     // Set default options.
     update_option('wp_sw_cache_enabled', false);
-    update_option('wp_sw_cache_name', $this->$cache_prefix.'-'.time());
+    update_option('wp_sw_cache_name', self::$cache_prefix.'-'.time());
     update_option('wp_sw_cache_files', array());
   }
 
