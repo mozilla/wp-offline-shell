@@ -10,7 +10,7 @@ self.addEventListener('install', function(event) {
         // Add all offline dependencies to the cache
         console.log('[install] Caches opened, adding all core components' +
           'to cache');
-        return cache.addAll(REQUIRED_FILES);
+        return cache.addAll(CACHE_FILES);
       })
       .then(function() {
         console.log('[install] All required resources have been cached, ' +
@@ -34,7 +34,6 @@ self.addEventListener('fetch', function(event) {
         }
         // Not in cache - return the result from the live server
         // `fetch` is essentially a "fallback"
-        console.log('[fetch] Returning from server: ', event.request.url);
         return fetch(event.request);
       }
     )

@@ -1,10 +1,10 @@
 <script>
 if(navigator.serviceWorker) {
-  navigator.serviceWorker.register('$path/sw.js', { scope: '/' }).then(function() {
-    console.log('Service worker registered!');
+  navigator.serviceWorker.register('wp-sw-cache-worker.js', { scope: '/' }).then(function(reg) {
+    console.log('Service worker registered!', reg);
   })
-  .catch(function() {
-    console.log('Service worker error!');
+  .catch(function(e) {
+    console.log('Service worker error!', e);
   });
 }
 </script>

@@ -36,18 +36,26 @@ class SW_Cache_Main {
 
   public function register() {
     $contents = file_get_contents(dirname(__FILE__).'/lib/service-worker-registration.html');
-    $contents = str_replace('$path', plugins_url('', __FILE__).'/lib', $contents);
     echo $contents;
   }
 
   public function on_parse_request() {
-    // TODO:  The relative path to the "sw.js" file really needs to be dynamic, not hardcoded
+    // TODO:  The relative path to the "wp-sw-cache-worker.js" file really needs to be dynamic, not hardcoded
     // This is bad
-    if($_SERVER['REQUEST_URI'] === '/wp-content/plugins/wp-sw-cache/lib/sw.js') {
+
+    $files = get_option('wp_sw_cache_files');
+    if(!$files) {
+      $files = array();
+    }
+    foreach($files as $index=>$file) {
+      $files[$index] = get_template_directory_uri().'/'.$file;
+    }
+
+    if($_SERVER['REQUEST_URI'] === '/wp-sw-cache-worker.js') {
       header('Content-Type: application/javascript');
       $contents = file_get_contents(dirname(__FILE__).'/lib/service-worker.js');
       $contents = str_replace('$name', get_option('wp_sw_cache_name'), $contents);
-      $contents = str_replace('$files', json_encode(get_option('wp_sw_cache_files')), $contents);
+      $contents = str_replace('$files', json_encode($files), $contents);
       echo $contents;
       exit();
     }
