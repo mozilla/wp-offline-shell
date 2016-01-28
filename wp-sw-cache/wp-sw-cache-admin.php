@@ -147,8 +147,11 @@ class SW_Cache_Admin {
     </table>
 
     <h2><?php _e('Theme Files to Cache', 'wpswcache'); ?> (<code><?php echo get_template(); ?></code>)</h2>
-    <p><?php _e('Select theme assets (typically JavaScript, CSS, fonts, and image files) that are used on a majority of pages.', 'wpswcache'); ?></p>
-    <div style="max-height: 300px;background:#fefefe;border:1px solid #ccc;padding:10px;overflow-y:auto;">
+    <p>
+      <?php _e('Select theme assets (typically JavaScript, CSS, fonts, and image files) that are used on a majority of pages.', 'wpswcache'); ?>
+      <button type="button" class="button button-primary wp-sw-cache-suggest-file-button" id="suggest-files" data-suggested-text="<?php echo esc_attr__('Files Suggested: '); ?>"><?php _e('Suggest More Files'); ?></button>
+    </p>
+    <div class="wp-sw-cache-file-list">
 
       <?php
         $template_abs_path = get_template_directory();
@@ -178,7 +181,7 @@ class SW_Cache_Admin {
         foreach($categories as $category) { ?>
           <h3><?php echo $category['title']; ?> (<?php echo implode(', ', $category['extensions']); ?>)</h3>
           <?php if(count($category['files'])) { ?>
-          <table>
+          <table id="files-list">
             <?php foreach($category['files'] as $file) { ?>
             <tr>
               <td style="width: 30px;">
@@ -199,6 +202,46 @@ class SW_Cache_Admin {
   </form>
 
 </div>
+
+<script type="text/javascript">
+  jQuery('#suggest-files').on('click', function() {
+    // TODO:  More advanced logic
+
+    var $this = jQuery(this);
+    var suggestedCounter = 0;
+
+    // Suggest main level CSS and JS files
+    jQuery([
+      '#files-list input[type="checkbox"][value$=".css"]:not([checked]):not([value*="/"])',
+      '#files-list input[type="checkbox"][value$=".js"]:not([checked]):not([value*="/"])'
+    ].join(',')).each(function() {
+      this.checked = true;
+      jQuery(this).closest('tr').addClass('wp-sw-cache-suggested');
+      suggestedCounter++;
+    });
+
+    $this.text($this.data('suggested-text') + ' ' + suggestedCounter);
+    this.disabled = true;
+  });
+</script>
+
+<style>
+  .wp-sw-cache-suggested {
+    background: lightgreen;
+  }
+
+  .wp-sw-cache-suggest-file-button {
+    float: right;
+  }
+
+  .wp-sw-cache-file-list {
+    max-height: 300px;
+    background: #fefefe;
+    border: 1px solid #ccc;
+    padding: 10px;
+    overflow-y: auto;
+  }
+</style>
 
 <?php
   }
