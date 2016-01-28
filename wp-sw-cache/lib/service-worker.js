@@ -43,6 +43,18 @@ self.addEventListener('fetch', function(event) {
 self.addEventListener('activate', function(event) {
   console.log('[activate] Activating ServiceWorker!');
 
+  // Clean up old cache in the background
+  caches.keys().then(function(cacheNames) {
+    return Promise.all(
+      cacheNames.map(function(cacheName) {
+        if(cacheName != CACHE_NAME) {
+          console.log('[activate] Deleting out of date cache:', cacheName);
+          return caches.delete(cacheName);
+        }
+      })
+    );
+  });
+
   // Calling claim() to force a "controllerchange" event on navigator.serviceWorker
   console.log('[activate] Claiming this ServiceWorker!');
   event.waitUntil(self.clients.claim());
