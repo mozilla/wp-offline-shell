@@ -18,6 +18,10 @@ class SW_Cache_Admin {
 
   public function on_admin_notices() {
     // TODO:  Add notice that if the plugin is activated but no files are selected, nothing is happening
+
+    if(get_option('wp_sw_cache_enabled') && !count(get_option('wp_sw_cache_files'))) {
+      echo '<div class="error"><p>',  __('Service Worker is enabled but no files have been selected for caching.  To take full advantage of this plugin, please select files to cache.'), '</p></div>';
+    }
   }
 
   public function on_admin_menu() {
@@ -92,12 +96,6 @@ class SW_Cache_Admin {
 ?>
 
 <div class="wrap">
-
-  <?php if(get_option('wp_sw_cache_enabled') && !count($selected_files)) { ?>
-    <div class="error">
-      <p><?php _e('Service Worker is enabled but no files have been selected for caching.  To take full advantage of this plugin, please select files to cache.'); ?></p>
-    </div>
-  <?php } ?>
 
   <?php if($submitted) { ?>
     <div class="updated">
