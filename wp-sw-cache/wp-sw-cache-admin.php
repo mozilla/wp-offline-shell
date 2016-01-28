@@ -25,7 +25,7 @@ class SW_Cache_Admin {
     }
 
     if(get_option('wp_sw_cache_enabled') && $_SERVER['REQUEST_SCHEME'] != 'https') {
-      echo '<div class="error"><p>The ServiceWorker API requires HTTPS and you are on HTTP.  Your Service Worker will not work.</p></div>';
+      echo '<div class="error"><p>The ServiceWorker API requires a secure origin (HTTPS or localhost).  Your Service Worker may not work.</p></div>';
     }
   }
 
