@@ -149,7 +149,7 @@ class SW_Cache_Admin {
     <h2><?php _e('Theme Files to Cache', 'wpswcache'); ?> (<code><?php echo get_template(); ?></code>)</h2>
     <p>
       <?php _e('Select theme assets (typically JavaScript, CSS, fonts, and image files) that are used on a majority of pages.', 'wpswcache'); ?>
-      <button type="button" class="button button-primary wp-sw-cache-suggest-file-button" id="suggest-files" data-suggested-text="<?php echo esc_attr__('Files Suggested: '); ?>"><?php _e('Suggest More Files'); ?></button>
+      <button type="button" class="button button-primary wp-sw-cache-suggest-file-button" data-suggested-text="<?php echo esc_attr__('Files Suggested: '); ?>"><?php _e('Suggest More Files'); ?></button>
     </p>
     <div class="wp-sw-cache-file-list">
 
@@ -201,10 +201,14 @@ class SW_Cache_Admin {
     <?php submit_button(__('Save Changes'), 'primary'); ?>
   </form>
 
+  <h2>Clear Caches</h2>
+  <p><?php _e('Click the button below to clear any caches created by this plugin.'); ?></p>
+  <button type="button" class="button button-primary wp-sw-cache-clear-caches-button" data-cleared-text="<?php echo esc_attr__('Caches cleared: '); ?>"><?php _e('Clear Caches'); ?></button>
+
 </div>
 
 <script type="text/javascript">
-  jQuery('#suggest-files').on('click', function() {
+  jQuery('.wp-sw-cache-suggest-file-button').on('click', function() {
     // TODO:  More advanced logic
 
     var $this = jQuery(this);
@@ -222,6 +226,25 @@ class SW_Cache_Admin {
 
     $this.text($this.data('suggested-text') + ' ' + suggestedCounter);
     this.disabled = true;
+  });
+
+
+  jQuery('.wp-sw-cache-clear-caches-button').on('click', function() {
+    var clearedCounter = 0;
+    var $button = jQuery(this);
+
+    // Clean up old cache in the background
+    caches.keys().then(function(cacheNames) {
+      return Promise.all(
+        cacheNames.map(function(cacheName) {
+          clearedCounter++;
+          return caches.delete(cacheName);
+        })
+      );
+    }).then(function() {
+      $button.text($button.data('cleared-text') + ' ' + clearedCounter);
+      $button[0].disabled = true;
+    });
   });
 </script>
 
