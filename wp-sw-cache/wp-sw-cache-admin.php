@@ -24,8 +24,8 @@ class SW_Cache_Admin {
       echo '<div class="update-nag"><p>',  __('Service Worker is enabled but no files have been selected for caching.  To take full advantage of this plugin, please select files to cache.'), '</p></div>';
     }
 
-    if(get_option('wp_sw_cache_enabled') && $_SERVER['REQUEST_SCHEME'] != 'https') {
-      echo '<div class="error"><p>The ServiceWorker API requires a secure origin (HTTPS or localhost).  Your Service Worker may not work.</p></div>';
+    if(get_option('wp_sw_cache_enabled') && $_SERVER['REQUEST_SCHEME'] != 'https' && strrpos(strtolower($_SERVER['HTTP_HOST']), 'localhost', -strlen($_SERVER['HTTP_HOST']))) {
+      echo '<div class="update-nag"><p>The ServiceWorker API requires a secure origin (HTTPS or localhost).  Your Service Worker may not work.</p></div>';
     }
   }
 
