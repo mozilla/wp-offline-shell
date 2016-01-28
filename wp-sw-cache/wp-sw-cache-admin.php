@@ -21,7 +21,11 @@ class SW_Cache_Admin {
     // TODO:  Add notice that if the plugin is activated but no files are selected, nothing is happening
 
     if(get_option('wp_sw_cache_enabled') && !count(get_option('wp_sw_cache_files'))) {
-      echo '<div class="update-nag is-dismissable"><p>',  __('Service Worker is enabled but no files have been selected for caching.  To take full advantage of this plugin, please select files to cache.'), '</p></div>';
+      echo '<div class="update-nag"><p>',  __('Service Worker is enabled but no files have been selected for caching.  To take full advantage of this plugin, please select files to cache.'), '</p></div>';
+    }
+
+    if($_SERVER['REQUEST_SCHEME'] != 'https') {
+      echo '<div class="error"><p>The ServiceWorker API requires HTTPS and you are on HTTP.  Your Service Worker will not work.</p></div>';
     }
   }
 
@@ -38,7 +42,7 @@ class SW_Cache_Admin {
   }
 
   function show_switch_theme_message() {
-    echo '<div class="update-nag is-dismissable"><p>',  __('You\'ve changed themes; please update your WP ServiceWorker Cache options.'), '</p></div>';
+    echo '<div class="update-nag"><p>',  __('You\'ve changed themes; please update your WP ServiceWorker Cache options.'), '</p></div>';
   }
 
   // http://php.net/manual/en/function.scandir.php#109140
