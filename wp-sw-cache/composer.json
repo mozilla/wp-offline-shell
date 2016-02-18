@@ -1,0 +1,14 @@
+{
+    "name": "darkwing/wp-sw-cache",
+    "description": "A WordPress plugin for caching theme assets.",
+    "authors": [ ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/mozilla/wp-sw-manager"
+        }
+    ],
+    "require": {
+        "mozilla/wp-sw-manager": "dev-master"
+    }
+}
