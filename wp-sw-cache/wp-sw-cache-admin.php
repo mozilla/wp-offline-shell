@@ -149,7 +149,8 @@ class SW_Cache_Admin {
     <h2><?php _e('Theme Files to Cache', 'wpswcache'); ?> (<code><?php echo get_template(); ?></code>)</h2>
     <p>
       <?php _e('Select theme assets (typically JavaScript, CSS, fonts, and image files) that are used on a majority of pages.', 'wpswcache'); ?>
-      <button type="button" class="button button-primary wp-sw-cache-suggest-file-button" data-suggested-text="<?php echo esc_attr__('Files Suggested: '); ?>"><?php _e('Suggest More Files'); ?></button>
+      <button type="button" class="button button-primary wp-sw-cache-toggle-all"><?php _e('Select All Files'); ?></button>
+      <button type="button" class="button button-primary wp-sw-cache-suggest-file" data-suggested-text="<?php echo esc_attr__('Files Suggested: '); ?>"><?php _e('Suggest More Files'); ?></button>
     </p>
     <div class="wp-sw-cache-file-list">
 
@@ -208,7 +209,7 @@ class SW_Cache_Admin {
 </div>
 
 <script type="text/javascript">
-  jQuery('.wp-sw-cache-suggest-file-button').on('click', function() {
+  jQuery('.wp-sw-cache-suggest-file').on('click', function() {
     // TODO:  More advanced logic
 
     var $this = jQuery(this);
@@ -228,6 +229,9 @@ class SW_Cache_Admin {
     this.disabled = true;
   });
 
+  jQuery('.wp-sw-cache-toggle-all').on('click', function() {
+    jQuery('#files-list input[type="checkbox"]').prop('checked', 'checked');
+  });
 
   jQuery('.wp-sw-cache-clear-caches-button').on('click', function() {
     var clearedCounter = 0;
@@ -253,8 +257,10 @@ class SW_Cache_Admin {
     background: lightgreen;
   }
 
-  .wp-sw-cache-suggest-file-button {
+  .wp-sw-cache-suggest-file,
+  .wp-sw-cache-toggle-all {
     float: right;
+    margin-left: 10px !important;
   }
 
   .wp-sw-cache-file-list {
