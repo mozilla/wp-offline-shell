@@ -241,8 +241,16 @@ class SW_Cache_Admin {
     caches.keys().then(function(cacheNames) {
       return Promise.all(
         cacheNames.map(function(cacheName) {
-          clearedCounter++;
-          return caches.delete(cacheName);
+
+          if(cacheName.indexOf('<?php echo SW_Cache_DB::$cache_prefix; ?>') != -1) {
+            console.log('Clearing cache: ', cacheName);
+            clearedCounter++;
+            return caches.delete(cacheName);
+          }
+          else {
+            console.log('Leaving cache: ' + cacheName);
+            return Promise.resolve();
+          }
         })
       );
     }).then(function() {
