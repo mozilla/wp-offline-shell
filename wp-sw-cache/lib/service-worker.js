@@ -24,10 +24,15 @@
   });
 
   self.addEventListener('fetch', function(event) {
+    var request = event.request;
+    var lookupRequest = normalizeAndAnonymize(request);
+    if (!shouldBeHandled(lookupRequest)) {
+      return;
+    }
+
     event.respondWith(
-      caches.match(event.request)
+      caches.match(lookupRequest)
         .then(function(response) {
-          // Cache hit - return the response from the cached version
           if (response) {
             console.log(
               '[fetch] Returning from ServiceWorker cache: ',
@@ -35,13 +40,36 @@
             );
             return response;
           }
-          // Not in cache - return the result from the live server
-          // `fetch` is essentially a "fallback"
+          console.error('[fetch] Cache miss! This should not happen. It implies problems caching.');
           return fetch(event.request);
         }
       )
     );
   });
+
+  function normalizeAndAnonymize(request) {
+    var url = new URL(request.url);
+    if (url.origin !== location.origin) {
+      return request;
+    }
+
+    url.search = '';
+    url.fragment = '';
+    return new Request(url, {
+      method: request.method,
+      headers: request.headers,
+      mode: 'no-cors',
+      credentials: request.credentials,
+      cache: request.cache,
+      redirect: request.redirect,
+      referrer: request.referrer,
+      integrity: request.integrity
+    });
+  }
+
+  function shouldBeHandled(request) {
+    return request.method === 'GET' && CACHE_FILES.indexOf(request.url) !== -1;
+  }
 
   self.addEventListener('activate', function(event) {
     console.log('[activate] Activating ServiceWorker!');
