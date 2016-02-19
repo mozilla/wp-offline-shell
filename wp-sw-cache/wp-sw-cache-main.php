@@ -11,7 +11,7 @@ class SW_Cache_Main {
 
   public function __construct() {
     if (get_option('wp_sw_cache_enabled')) {
-      WP_SW_Manager::get_manager()->sw()->add_content(array($this, "write_sw"));
+      WP_SW_Manager::get_manager()->sw()->add_content(array($this, 'write_sw'));
     }
   }
 
