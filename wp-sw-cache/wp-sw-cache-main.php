@@ -10,7 +10,9 @@ class SW_Cache_Main {
   private static $instance;
 
   public function __construct() {
-    WP_SW_Manager::get_manager()->sw()->add_content(array($this, "write_sw"));
+    if (get_option('wp_sw_cache_enabled')) {
+      WP_SW_Manager::get_manager()->sw()->add_content(array($this, "write_sw"));
+    }
   }
 
   public static function init() {
