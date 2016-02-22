@@ -21,11 +21,11 @@ class SW_Cache_Admin {
     // TODO:  Add notice that if the plugin is activated but no files are selected, nothing is happening
 
     if(get_option('wp_sw_cache_enabled') && !count(get_option('wp_sw_cache_files'))) {
-      echo '<div class="update-nag"><p>',  __('Service Worker is enabled but no files have been selected for caching.  To take full advantage of this plugin, please select files to cache.'), '</p></div>';
+      echo '<div class="update-nag"><p>', sprintf(__('Service Worker is enabled but no files have been selected for caching.  To take full advantage of this plugin, <a href="%s">please select files to cache</a>.', 'swpswcache'), admin_url('options-general.php?page=wp-sw-cache-options')),'</p></div>';
     }
 
     if(get_option('wp_sw_cache_enabled') && ($_SERVER['REQUEST_SCHEME'] != 'https' && strrpos(strtolower($_SERVER['HTTP_HOST']), 'localhost', -strlen($_SERVER['HTTP_HOST']) === false))) {
-      echo '<div class="update-nag"><p>The ServiceWorker API requires a secure origin (HTTPS or localhost).  Your Service Worker may not work.</p></div>';
+      echo '<div class="update-nag"><p>', __('The ServiceWorker API requires a secure origin (HTTPS or localhost).  Your Service Worker may not work.', 'swpswcache'), '</p></div>';
     }
   }
 
@@ -42,7 +42,7 @@ class SW_Cache_Admin {
   }
 
   function show_switch_theme_message() {
-    echo '<div class="update-nag"><p>',  __('You\'ve changed themes; please update your WP ServiceWorker Cache options.'), '</p></div>';
+    echo '<div class="update-nag"><p>',  __('You\'ve changed themes; please update your WP ServiceWorker Cache options.', 'swpswcache'), '</p></div>';
   }
 
   // http://php.net/manual/en/function.scandir.php#109140
