@@ -17,9 +17,36 @@ class SW_Cache_Admin {
     }
   }
 
-  public function on_admin_notices() {
-    // TODO:  Add notice that if the plugin is activated but no files are selected, nothing is happening
+  public function process_options() {
+    // Form submission
+    if(isset($_POST['wpswcache_form_submitted'])) {
 
+      // Update "enabled" status
+      update_option('wp_sw_cache_enabled', isset($_POST['wp_sw_cache_enabled']));
+
+      // Update "prefix" value
+      if(isset($_POST['wp_sw_cache_name'])) {
+        update_option('wp_sw_cache_name', $_POST['wp_sw_cache_name']);
+      }
+      else {
+        update_option('wp_sw_cache_name', SW_Cache_DB::$cache_prefix.'-'.time());
+      }
+
+      // Update files to cache
+      if(isset($_POST['wp_sw_cache_files'])) {
+        update_option('wp_sw_cache_files', $_POST['wp_sw_cache_files']);
+      }
+      else {
+        update_option('wp_sw_cache_files', array());
+      }
+
+      return true;
+    }
+
+    return false;
+  }
+
+  public function on_admin_notices() {
     if(get_option('wp_sw_cache_enabled') && !count(get_option('wp_sw_cache_files'))) {
       echo '<div class="update-nag"><p>', sprintf(__('Service Worker is enabled but no files have been selected for caching.  To take full advantage of this plugin, <a href="%s">please select files to cache</a>.', 'swpswcache'), admin_url('options-general.php?page=wp-sw-cache-options')),'</p></div>';
     }
@@ -79,34 +106,9 @@ class SW_Cache_Admin {
   }
 
   function options() {
+    $submitted = $this->process_options();
 
-    $submitted = false;
-
-    // Form submission
-    if(isset($_POST['form_submitted'])) {
-
-      $submitted = true;
-
-      // Update "enabled" status
-      update_option('wp_sw_cache_enabled', isset($_POST['wp_sw_cache_enabled']));
-
-      // Update "prefix" value
-      if(isset($_POST['wp_sw_cache_name'])) {
-        update_option('wp_sw_cache_name', $_POST['wp_sw_cache_name']);
-      }
-      else {
-        update_option('wp_sw_cache_name', SW_Cache_DB::$cache_prefix.'-'.time());
-      }
-
-      // Update files to cache
-      if(isset($_POST['wp_sw_cache_files'])) {
-        update_option('wp_sw_cache_files', $_POST['wp_sw_cache_files']);
-      }
-      else {
-        update_option('wp_sw_cache_files', array());
-      }
-    }
-
+    // Get default values for file listing
     $selected_files = get_option('wp_sw_cache_files');
     if(!$selected_files) {
       $selected_files = array();
@@ -127,7 +129,7 @@ class SW_Cache_Admin {
   <p><?php _e('WordPress Service Worker Cache is a ultility that harnesses the power of the <a href="https://serviceworke.rs" target="_blank">ServiceWorker API</a> to cache frequently used assets for the purposes of performance and offline viewing.'); ?></p>
 
   <form method="post" action="">
-    <input type="hidden" name="form_submitted" value="1">
+    <input type="hidden" name="wpswcache_form_submitted" value="1">
 
     <h2><?php _e('ServiceWorker Cache Settings', 'wpswcache'); ?></h2>
     <table class="form-table">
