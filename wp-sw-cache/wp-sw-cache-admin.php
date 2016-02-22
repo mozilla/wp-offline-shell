@@ -72,39 +72,6 @@ class SW_Cache_Admin {
     echo '<div class="update-nag"><p>',  __('You\'ve changed themes; please update your WP ServiceWorker Cache options.', 'swpswcache'), '</p></div>';
   }
 
-  // http://php.net/manual/en/function.scandir.php#109140
-  public function scan_theme_dir($directory, $recursive = true, $listDirs = false, $listFiles = true, $exclude = '') {
-    $arrayItems = array();
-    $skipByExclude = false;
-    $handle = opendir($directory);
-    if ($handle) {
-        while (false !== ($file = readdir($handle))) {
-        preg_match("/(^(([\.]){1,2})$|(\.(svn|git|md))|(Thumbs\.db|\.DS_STORE))$/iu", $file, $skip);
-        if($exclude){
-            preg_match($exclude, $file, $skipByExclude);
-        }
-        if (!$skip && !$skipByExclude) {
-            if (is_dir($directory. DIRECTORY_SEPARATOR . $file)) {
-                if($recursive) {
-                    $arrayItems = array_merge($arrayItems, $this->scan_theme_dir($directory. DIRECTORY_SEPARATOR . $file, $recursive, $listDirs, $listFiles, $exclude));
-                }
-                if($listDirs){
-                    $file = $directory . DIRECTORY_SEPARATOR . $file;
-                    $arrayItems[] = $file;
-                }
-            } else {
-                if($listFiles){
-                    $file = $directory . DIRECTORY_SEPARATOR . $file;
-                    $arrayItems[] = $file;
-                }
-            }
-        }
-    }
-    closedir($handle);
-    }
-    return $arrayItems;
-  }
-
   function options() {
     $submitted = $this->process_options();
 
@@ -158,7 +125,8 @@ class SW_Cache_Admin {
 
       <?php
         $template_abs_path = get_template_directory();
-        $theme_files = $this->scan_theme_dir($template_abs_path);
+        $theme_files = wp_get_theme()->get_files(null, 10); // 10 is arbitrary
+
         $categories = array(
           array('title' => __('CSS Files', 'wpswcache'), 'extensions' => array('css'), 'files' => array()),
           array('title' => __('JavaScript Files', 'wpswcache'), 'extensions' => array('js'), 'files' => array()),
@@ -168,7 +136,7 @@ class SW_Cache_Admin {
         );
 
         // Sort the files and place them in their baskets
-        foreach($theme_files as $file) {
+        foreach($theme_files as $file => $abs_path) {
           $file_relative = str_replace(get_theme_root().'/'.get_template().'/', '', $file);
           $path_info = pathinfo($file_relative);
           $file_category_found = false;
@@ -197,7 +165,6 @@ class SW_Cache_Admin {
             <?php } ?>
           </table>
           <?php } else { ?><p><?php _e('No matching files found.', 'wpswcache'); ?></p><?php } ?>
-
         <?php } ?>
     </div>
 
