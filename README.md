@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/darkwing/wp-sw-cache.svg?branch=master)](https://travis-ci.org/darkwing/wp-sw-cache)
+
 # WordPress Service Worker Cache
 A WordPress plugin for caching theme assets via a service worker for the sake of performance and offline functionality.
 
@@ -20,11 +22,6 @@ With the plugin in the WordPress directory structure:
   4.  Save!
 
 A service worker will then be placed within every page of the blog and select assets will be served from the service worker!
-
-# wp-offline-content
-> A WordPress plugin for offlining content.
-
-[![Build Status](https://travis-ci.org/darkwing/wp-sw-cache.svg?branch=master)](https://travis-ci.org/darkwing/wp-sw-cache)
 
 ## Install the plugin
 
