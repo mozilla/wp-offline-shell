@@ -8,6 +8,7 @@ load_plugin_textdomain('wpswcache', false, dirname(plugin_basename(__FILE__)) . 
 
 class SW_Cache_Main {
   private static $instance;
+  public static $cache_prefix = 'wp-sw-cache';
 
   public function __construct() {
     if (get_option('wp_sw_cache_enabled')) {
@@ -21,18 +22,36 @@ class SW_Cache_Main {
     }
   }
 
+  public function update_version($name = '') {
+    if(!$name) {
+      $name = time();
+    }
+    update_option('wp_sw_cache_name', self::$cache_prefix.'-'.$name);
+  }
+
   public function write_sw() {
+
     $files = get_option('wp_sw_cache_files');
+    $file_keys = array();
     if(!$files) {
-        $files = array();
+      $files = array();
     }
     foreach($files as $index=>$file) {
-        $files[$index] = get_template_directory_uri().'/'.$file;
+      $tfile = get_template_directory().'/'.$file;
+
+      if(file_exists($tfile)) {
+        $file_keys[get_template_directory_uri().'/'.$file] = filemtime($tfile);
+      }
     }
 
+    $file_keys = array_keys($file_keys);
+    $name = md5(serialize($file_keys));
+    self::update_version($name);
+
     $contents = file_get_contents(dirname(__FILE__).'/lib/service-worker.js');
-    $contents = str_replace('$name', json_encode(get_option('wp_sw_cache_name')), $contents);
-    $contents = str_replace('$files', json_encode($files), $contents);
+    $contents = str_replace('$name', $name, $contents);
+    $contents = str_replace('$files', json_encode($file_keys), $contents);
+    $contents = str_replace('$debug', get_option('wp_sw_cache_debug') ? 'true' : 'false', $contents);
     echo $contents;
   }
 }
