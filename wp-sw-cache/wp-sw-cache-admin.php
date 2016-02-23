@@ -24,19 +24,14 @@ class SW_Cache_Admin {
       // Update "enabled" status
       update_option('wp_sw_cache_enabled', isset($_POST['wp_sw_cache_enabled']));
 
-      // Update "prefix" value
-      if(isset($_POST['wp_sw_cache_name'])) {
-        update_option('wp_sw_cache_name', $_POST['wp_sw_cache_name']);
-      }
-      else {
-        update_option('wp_sw_cache_name', SW_Cache_DB::$cache_prefix.'-'.time());
-      }
+      // Update "debug" status
+      update_option('wp_sw_cache_debug', isset($_POST['wp_sw_cache_debug']));
 
       // Update files to cache
       $files = array();
       if(isset($_POST['wp_sw_cache_files'])) {
         foreach($_POST['wp_sw_cache_files'] as $file) {
-          array_push($files, stripslashes(htmlspecialchars_decode($file)));
+          array_push($files, stripslashes($file));
         }
       }
       update_option('wp_sw_cache_files', $files);
@@ -84,6 +79,25 @@ class SW_Cache_Admin {
 
 ?>
 
+<style>
+  .wp-sw-cache-suggested {
+    background: lightgreen;
+  }
+
+  .wp-sw-cache-suggest-file,
+  .wp-sw-cache-toggle-all {
+    float: right;
+    margin-left: 10px !important;
+  }
+
+  .wp-sw-cache-file-list {
+    max-height: 300px;
+    background: #fefefe;
+    border: 1px solid #ccc;
+    padding: 10px;
+    overflow-y: auto;
+  }
+</style>
 <div class="wrap">
 
   <?php if($submitted) { ?>
@@ -92,7 +106,7 @@ class SW_Cache_Admin {
     </div>
   <?php } ?>
 
-  <h1><?php _e('WordPress Service Worker Cache', 'wpswcache'); ?></h1>
+  <h1><?php _e('WordPress Service Worker Cache', 'wpswcache'); ?> (<?php echo SW_Cache_Main::$cache_prefix; ?>)</h1>
 
   <p><?php _e('WordPress Service Worker Cache is a ultility that harnesses the power of the <a href="https://serviceworke.rs" target="_blank">ServiceWorker API</a> to cache frequently used assets for the purposes of performance and offline viewing.'); ?></p>
 
@@ -108,10 +122,15 @@ class SW_Cache_Admin {
       </td>
     </tr>
     <tr>
-      <th scope="row"><label for="wp_sw_cache_name"><?php _e('Cache Name', 'wpswcache'); ?></label></th>
+      <th scope="row"><label for="wp_sw_cache_debug"><?php _e('Enable Debug Messages', 'wpswcache'); ?></label></th>
       <td>
-        <input type="text" name="wp_sw_cache_name" id="wp_sw_cache_name" value="<?php echo esc_attr__(get_option('wp_sw_cache_name')); ?>" class="regular-text ltr" disabled />
-        <?php _e('(Will update upon save for cache-busting purposes.)'); ?>
+        <input type="checkbox" name="wp_sw_cache_debug" id="wp_sw_cache_debug" value="1" <?php if(get_option('wp_sw_cache_debug')) echo 'checked'; ?> />
+      </td>
+    </tr>
+    <tr>
+      <th scope="row"><label for="wp_sw_cache_name"><?php _e('Current Cache Name', 'wpswcache'); ?></label></th>
+      <td>
+        <em><?php echo get_option('wp_sw_cache_name'); ?></em>
       </td>
     </tr>
     </table>
@@ -122,6 +141,8 @@ class SW_Cache_Admin {
       <button type="button" class="button button-primary wp-sw-cache-toggle-all"><?php _e('Select All Files'); ?></button>
       <button type="button" class="button button-primary wp-sw-cache-suggest-file" data-suggested-text="<?php echo esc_attr__('Files Suggested: '); ?>"><?php _e('Suggest More Files'); ?></button>
     </p>
+
+    <?php /* <pre><?php print_r($selected_files); ?></pre> */ ?>
     <div class="wp-sw-cache-file-list">
 
       <?php
@@ -158,10 +179,10 @@ class SW_Cache_Admin {
             <?php foreach($category['files'] as $file) { $file_id++; ?>
             <tr>
               <td style="width: 30px;">
-                <input type="checkbox" name="wp_sw_cache_files[]" id="wp_sw_cache_files['file_<?php echo $file_id; ?>']" value="<?php echo htmlspecialchars($file); ?>" <?php if(in_array($file, $selected_files)) { echo 'checked'; } ?> />
+                <input type="checkbox" name="wp_sw_cache_files[]" id="wp_sw_cache_files['file_<?php echo $file_id; ?>']" value="<?php echo esc_attr__($file); ?>" <?php if(in_array($file, $selected_files)) { echo 'checked'; } ?> />
               </td>
               <td>
-                <label for="wp_sw_cache_files['file_<?php echo $file_id; ?>']"><?php echo htmlspecialchars($file); ?></label>
+                <label for="wp_sw_cache_files['file_<?php echo $file_id; ?>']"><?php echo $file; ?></label>
               </td>
             </tr>
             <?php } ?>
@@ -175,7 +196,7 @@ class SW_Cache_Admin {
 
   <h2>Clear Caches</h2>
   <p><?php _e('Click the button below to clear any caches created by this plugin.'); ?></p>
-  <button type="button" class="button button-primary wp-sw-cache-clear-caches-button" data-cleared-text="<?php echo esc_attr__('Caches cleared: '); ?>"><?php _e('Clear Caches'); ?></button>
+  <button type="button" class="button button-primary wp-sw-cache-clear-caches-button" data-cleared-text="<?php echo esc_attr('Caches cleared: '); ?>"><?php _e('Clear Caches'); ?></button>
 
 </div>
 
@@ -213,7 +234,7 @@ class SW_Cache_Admin {
       return Promise.all(
         cacheNames.map(function(cacheName) {
 
-          if(cacheName.indexOf('<?php echo SW_Cache_DB::$cache_prefix; ?>') != -1) {
+          if(cacheName.indexOf('<?php echo SW_Cache_Main::$cache_prefix; ?>') != -1) {
             console.log('Clearing cache: ', cacheName);
             clearedCounter++;
             return caches.delete(cacheName);
@@ -230,26 +251,6 @@ class SW_Cache_Admin {
     });
   });
 </script>
-
-<style>
-  .wp-sw-cache-suggested {
-    background: lightgreen;
-  }
-
-  .wp-sw-cache-suggest-file,
-  .wp-sw-cache-toggle-all {
-    float: right;
-    margin-left: 10px !important;
-  }
-
-  .wp-sw-cache-file-list {
-    max-height: 300px;
-    background: #fefefe;
-    border: 1px solid #ccc;
-    padding: 10px;
-    overflow-y: auto;
-  }
-</style>
 
 <?php
   }
