@@ -1,0 +1,24 @@
+{
+  "name": "wp-sw-cache",
+  "version": "0.1.0",
+  "description": "A WordPress plugin for selecting theme assets to be cached by service workers",
+  "dependencies": {},
+  "devDependencies": {
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/darkwing/wp-sw-cache.git"
+  },
+  "keywords": [
+    "wordpress",
+    "offline",
+    "plugin",
+    "themes"
+  ],
+  "author": "David Walsh",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/darkwing/wp-sw-cache/issues"
+  },
+  "homepage": "https://github.com/darkwing/wp-sw-cache#readme"
+}
