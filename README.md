@@ -24,7 +24,7 @@ A service worker will then be placed within every page of the blog and select as
 # wp-offline-content
 > A WordPress plugin for offlining content.
 
-[![Build Status](https://travis-ci.org/delapuente/wp-offline-content.svg?branch=master)](https://travis-ci.org/delapuente/wp-offline-content) [![WordPress plugin](https://img.shields.io/wordpress/plugin/v/offline-content.svg)](https://wordpress.org/plugins/offline-content/) [![WordPress](https://img.shields.io/wordpress/plugin/dt/offline-content.svg)](https://wordpress.org/plugins/offline-content/)
+[![Build Status](https://travis-ci.org/darkwing/wp-sw-cache.svg?branch=master)](https://travis-ci.org/darkwing/wp-sw-cache)
 
 ## Install the plugin
 
