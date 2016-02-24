@@ -286,11 +286,11 @@ class SW_Cache_Admin {
   });
 
   jQuery('.wp-sw-cache-toggle-all').on('click', function() {
-    jQuery('#files-list input[type="checkbox"]').prop('checked', 'checked');
+    jQuery('.files-list input[type="checkbox"]').prop('checked', 'checked');
   });
 
   jQuery('.wp-sw-cache-clear-all').on('click', function() {
-    jQuery('#files-list input[type="checkbox"]').prop('checked', '');
+    jQuery('.files-list input[type="checkbox"]').prop('checked', '');
   });
 
   jQuery('.wp-sw-cache-clear-caches-button').on('click', function() {
