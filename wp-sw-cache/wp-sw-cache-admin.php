@@ -85,7 +85,8 @@ class SW_Cache_Admin {
   }
 
   .wp-sw-cache-suggest-file,
-  .wp-sw-cache-toggle-all {
+  .wp-sw-cache-toggle-all,
+  .wp-sw-cache-clear-all {
     float: right;
     margin-left: 10px !important;
   }
@@ -96,6 +97,20 @@ class SW_Cache_Admin {
     border: 1px solid #ccc;
     padding: 10px;
     overflow-y: auto;
+  }
+
+  .wp-sw-cache-suggest-file span {
+    font-size: smaller;
+    color: #fc0;
+    font-weight: bold;
+  }
+
+  .wp-sw-cache-file-size {
+    font-size: smaller;
+    color: #999;
+    font-size: italic;
+    display: inline-block;
+    margin-left: 20px;
   }
 </style>
 <div class="wrap">
@@ -139,7 +154,8 @@ class SW_Cache_Admin {
     <p>
       <?php _e('Select theme assets (typically JavaScript, CSS, fonts, and image files) that are used on a majority of pages.', 'wpswcache'); ?>
       <button type="button" class="button button-primary wp-sw-cache-toggle-all"><?php _e('Select All Files'); ?></button>
-      <button type="button" class="button button-primary wp-sw-cache-suggest-file" data-suggested-text="<?php echo esc_attr__('Files Suggested: '); ?>"><?php _e('Suggest More Files'); ?></button>
+      <button type="button" class="button button-primary wp-sw-cache-clear-all"><?php _e('Clear All Files'); ?></button>
+      <button type="button" class="button button-primary wp-sw-cache-suggest-file" data-suggested-text="<?php echo esc_attr__('Files Suggested: '); ?>"><?php _e('Suggest Files'); ?> <span>(<?php _e('beta'); ?>)</span></button>
     </p>
 
     <?php /* <pre><?php print_r($selected_files); ?></pre> */ ?>
@@ -165,7 +181,10 @@ class SW_Cache_Admin {
 
           foreach($categories as $index=>$category) {
             if(in_array(strtolower($path_info['extension']), $category['extensions']) || ($file_category_found === false && $category['extensions'][0] === '*')) {
-              $categories[$index]['files'][] = $file_relative;
+              $categories[$index]['files'][] = array(
+                'name' => $file_relative,
+                'size' => filesize($abs_path)
+              );
               $file_category_found = true;
             }
           }
@@ -179,10 +198,13 @@ class SW_Cache_Admin {
             <?php foreach($category['files'] as $file) { $file_id++; ?>
             <tr>
               <td style="width: 30px;">
-                <input type="checkbox" name="wp_sw_cache_files[]" id="wp_sw_cache_files['file_<?php echo $file_id; ?>']" value="<?php echo urlencode($file); ?>" <?php if(in_array($file, $selected_files)) { echo 'checked'; } ?> />
+                <input type="checkbox" name="wp_sw_cache_files[]" id="wp_sw_cache_files['file_<?php echo $file_id; ?>']" value="<?php echo urlencode($file['name']); ?>" <?php if(in_array($file['name'], $selected_files)) { echo 'checked'; } ?> />
               </td>
               <td>
-                <label for="wp_sw_cache_files['file_<?php echo $file_id; ?>']"><?php echo $file; ?></label>
+                <label for="wp_sw_cache_files['file_<?php echo $file_id; ?>']">
+                  <?php echo $file['name']; ?>
+                  <span class="wp-sw-cache-file-size"><?php echo ($file['size'] > 0 ? round($file['size']/1024, 2) : 0).'kb'; ?></span>
+                </label>
               </td>
             </tr>
             <?php } ?>
@@ -208,21 +230,22 @@ class SW_Cache_Admin {
     var suggestedCounter = 0;
 
     // Suggest main level CSS and JS files
-    jQuery([
-      '#files-list input[type="checkbox"][value$=".css"]:not([checked]):not([value*="/"])',
-      '#files-list input[type="checkbox"][value$=".js"]:not([checked]):not([value*="/"])'
-    ].join(',')).each(function() {
-      this.checked = true;
-      jQuery(this).closest('tr').addClass('wp-sw-cache-suggested');
-      suggestedCounter++;
-    });
+    var $recommended = jQuery('#files-list input[type="checkbox"].recommended')
+                        .prop('checked', 'checked')
+                        .closest('tr').addClass('wp-sw-cache-suggested');
 
-    $this.text($this.data('suggested-text') + ' ' + suggestedCounter);
-    this.disabled = true;
+    // Update sugget button now that the process is done
+    $this
+      .text($this.data('suggested-text') + ' ' + $recommended.length)
+      .prop('disabled', 'disabled');
   });
 
   jQuery('.wp-sw-cache-toggle-all').on('click', function() {
     jQuery('#files-list input[type="checkbox"]').prop('checked', 'checked');
+  });
+
+  jQuery('.wp-sw-cache-clear-all').on('click', function() {
+    jQuery('#files-list input[type="checkbox"]').prop('checked', '');
   });
 
   jQuery('.wp-sw-cache-clear-caches-button').on('click', function() {
