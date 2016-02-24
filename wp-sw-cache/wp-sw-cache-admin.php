@@ -68,6 +68,27 @@ class SW_Cache_Admin {
     echo '<div class="update-nag"><p>',  __('You\'ve changed themes; please update your WP ServiceWorker Cache options.', 'swpswcache'), '</p></div>';
   }
 
+  function determine_file_recommendation($file_info, $all_files) {
+    /*
+      TODO:
+        -  Detect if a "positive" file has a "-min" version; if so, choose the -min and not the standard file
+
+    */
+
+
+    // Standard CSS file
+    if($file_info['name'] === 'style.css') {
+      return sprintf(__('%s is a standard WordPress theme file.'), 'style.css');
+    }
+
+    // "Main level" CSS, JS, and image files are likely important for small theme_files
+    if(in_array($file_info['category'], array('css', 'js', 'image')) && strpos($file_info['name'], '/') === false) {
+      return __('Main level assets are likely important in small themes');
+    }
+
+    return false;
+  }
+
   function options() {
     $submitted = $this->process_options();
 
@@ -105,13 +126,19 @@ class SW_Cache_Admin {
     font-weight: bold;
   }
 
-  .wp-sw-cache-file-size {
+  .wp-sw-cache-file-size,
+  .wp-sw-cache-file-recommended {
     font-size: smaller;
     color: #999;
     font-size: italic;
     display: inline-block;
     margin-left: 20px;
   }
+
+  .wp-sw-cache-file-recommended {
+    color: green;
+  }
+
 </style>
 <div class="wrap">
 
@@ -160,17 +187,16 @@ class SW_Cache_Admin {
 
     <?php /* <pre><?php print_r($selected_files); ?></pre> */ ?>
     <div class="wp-sw-cache-file-list">
-
       <?php
         $template_abs_path = get_template_directory();
         $theme_files = wp_get_theme()->get_files(null, 10); // 10 is arbitrary
 
         $categories = array(
-          array('title' => __('CSS Files', 'wpswcache'), 'extensions' => array('css'), 'files' => array()),
-          array('title' => __('JavaScript Files', 'wpswcache'), 'extensions' => array('js'), 'files' => array()),
-          array('title' => __('Font Files', 'wpswcache'), 'extensions' => array('woff', 'woff2', 'ttf'), 'files' => array()),
-          array('title' => __('Image Files', 'wpswcache'), 'extensions' => array('svg', 'jpg', 'jpeg', 'gif', 'png', 'webp'), 'files' => array()),
-          array('title' => __('Other Files', 'wpswcache'), 'extensions' => array('*'), 'files' => array()) // Needs to be last
+          array('key' => 'css', 'title' => __('CSS Files', 'wpswcache'), 'extensions' => array('css'), 'files' => array()),
+          array('key' => 'js', 'title' => __('JavaScript Files', 'wpswcache'), 'extensions' => array('js'), 'files' => array()),
+          array('key' => 'font', 'title' => __('Font Files', 'wpswcache'), 'extensions' => array('woff', 'woff2', 'ttf', 'eot'), 'files' => array()),
+          array('key' => 'image', 'title' => __('Image Files', 'wpswcache'), 'extensions' => array('svg', 'jpg', 'jpeg', 'gif', 'png', 'webp'), 'files' => array()),
+          array('key' => 'other', 'title' => __('Other Files', 'wpswcache'), 'extensions' => array('*'), 'files' => array()) // Needs to be last
         );
 
         // Sort the files and place them in their baskets
@@ -179,12 +205,23 @@ class SW_Cache_Admin {
           $path_info = pathinfo($file_relative);
           $file_category_found = false;
 
+          // Build array to represent file
+          $file_info = array(
+            'name' => $file_relative,
+            'size' => filesize($abs_path),
+            'absolute' => $abs_path,
+            'path' => $path_info
+          );
+
+          // Categorize the file, use "other" as the fallback
           foreach($categories as $index=>$category) {
-            if(in_array(strtolower($path_info['extension']), $category['extensions']) || ($file_category_found === false && $category['extensions'][0] === '*')) {
-              $categories[$index]['files'][] = array(
-                'name' => $file_relative,
-                'size' => filesize($abs_path)
-              );
+            if(in_array(strtolower($path_info['extension']), $category['extensions']) || ($file_category_found === false && $category['key'] === 'other')) {
+              // Store the category to help determine recommendation
+              $file_info['category'] = $category['key'];
+              // Determine if we should recommend this file be cached
+              $file_info['recommended'] = self::determine_file_recommendation($file_info, $theme_files);
+              // Add to category array
+              $categories[$index]['files'][] = $file_info;
               $file_category_found = true;
             }
           }
@@ -193,17 +230,25 @@ class SW_Cache_Admin {
         $file_id = 0;
         foreach($categories as $category) { ?>
           <h3><?php echo $category['title']; ?> (<?php echo implode(', ', $category['extensions']); ?>)</h3>
+
+          <?php if($category['key'] === 'other') { ?>
+            <p><em><?php _e('The following assets, especially <code>.php</code> files, have no value in being cached directly by service workers.'); ?></em></p>
+          <?php } ?>
+
           <?php if(count($category['files'])) { ?>
-          <table id="files-list">
+          <table class="files-list">
             <?php foreach($category['files'] as $file) { $file_id++; ?>
             <tr>
               <td style="width: 30px;">
-                <input type="checkbox" name="wp_sw_cache_files[]" id="wp_sw_cache_files['file_<?php echo $file_id; ?>']" value="<?php echo urlencode($file['name']); ?>" <?php if(in_array($file['name'], $selected_files)) { echo 'checked'; } ?> />
+                <input type="checkbox" class="<?php if($file['recommended']) { echo 'recommended'; } ?>" name="wp_sw_cache_files[]" id="wp_sw_cache_files['file_<?php echo $file_id; ?>']" value="<?php echo urlencode($file['name']); ?>" <?php if(in_array($file['name'], $selected_files)) { echo 'checked'; } ?> />
               </td>
               <td>
                 <label for="wp_sw_cache_files['file_<?php echo $file_id; ?>']">
                   <?php echo $file['name']; ?>
                   <span class="wp-sw-cache-file-size"><?php echo ($file['size'] > 0 ? round($file['size']/1024, 2) : 0).'kb'; ?></span>
+                  <?php if($file['recommended']) { ?>
+                    <span class="wp-sw-cache-file-recommended">&#10004; <?php echo $file['recommended']; ?></span>
+                  <?php } ?>
                 </label>
               </td>
             </tr>
@@ -230,7 +275,7 @@ class SW_Cache_Admin {
     var suggestedCounter = 0;
 
     // Suggest main level CSS and JS files
-    var $recommended = jQuery('#files-list input[type="checkbox"].recommended')
+    var $recommended = jQuery('.files-list input[type="checkbox"].recommended:not(:checked)')
                         .prop('checked', 'checked')
                         .closest('tr').addClass('wp-sw-cache-suggested');
 
