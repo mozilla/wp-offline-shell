@@ -31,7 +31,7 @@ class SW_Cache_Admin {
       $files = array();
       if(isset($_POST['wp_sw_cache_files'])) {
         foreach($_POST['wp_sw_cache_files'] as $file) {
-          array_push($files, stripslashes($file));
+          array_push($files, urldecode($file));
         }
       }
       update_option('wp_sw_cache_files', $files);
@@ -179,7 +179,7 @@ class SW_Cache_Admin {
             <?php foreach($category['files'] as $file) { $file_id++; ?>
             <tr>
               <td style="width: 30px;">
-                <input type="checkbox" name="wp_sw_cache_files[]" id="wp_sw_cache_files['file_<?php echo $file_id; ?>']" value="<?php echo esc_attr__($file); ?>" <?php if(in_array($file, $selected_files)) { echo 'checked'; } ?> />
+                <input type="checkbox" name="wp_sw_cache_files[]" id="wp_sw_cache_files['file_<?php echo $file_id; ?>']" value="<?php echo urlencode($file); ?>" <?php if(in_array($file, $selected_files)) { echo 'checked'; } ?> />
               </td>
               <td>
                 <label for="wp_sw_cache_files['file_<?php echo $file_id; ?>']"><?php echo $file; ?></label>
