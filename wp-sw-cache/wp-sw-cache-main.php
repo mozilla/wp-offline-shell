@@ -22,14 +22,18 @@ class SW_Cache_Main {
     }
   }
 
-  public function update_version($name = '') {
+  public static function update_version($name = '') {
     if(!$name) {
       $name = time();
     }
     update_option('wp_sw_cache_name', self::$cache_prefix.'-'.$name);
   }
 
-  public function write_sw() {
+  public static function build_sw() {
+    // Return nothing if the plugin is disabled
+    if(!get_option('wp_sw_cache_enabled')) {
+      return '';
+    }
 
     $files = get_option('wp_sw_cache_files');
     if(!$files) {
@@ -42,7 +46,6 @@ class SW_Cache_Main {
     // Ensure that every file directed to be cached still exists
     foreach($files as $index=>$file) {
       $tfile = get_template_directory().'/'.$file;
-
       if(file_exists($tfile)) {
         // Use file's last change time in name hash so the SW is updated if any file is updated
         $file_keys[get_template_directory_uri().'/'.$file] = filemtime($tfile);
@@ -59,7 +62,11 @@ class SW_Cache_Main {
     $contents = str_replace('$name', $name, $contents);
     $contents = str_replace('$files', json_encode(array_keys($file_keys)), $contents);
     $contents = str_replace('$debug', get_option('wp_sw_cache_debug') ? 'true' : 'false', $contents);
-    echo $contents;
+    return $contents;
+  }
+
+  public function write_sw() {
+    echo self::build_sw();
   }
 }
 

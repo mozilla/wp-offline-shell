@@ -100,46 +100,6 @@ class SW_Cache_Admin {
 
 ?>
 
-<style>
-  .wp-sw-cache-suggested {
-    background: lightgreen;
-  }
-
-  .wp-sw-cache-suggest-file,
-  .wp-sw-cache-toggle-all,
-  .wp-sw-cache-clear-all {
-    float: right;
-    margin-left: 10px !important;
-  }
-
-  .wp-sw-cache-file-list {
-    max-height: 300px;
-    background: #fefefe;
-    border: 1px solid #ccc;
-    padding: 10px;
-    overflow-y: auto;
-  }
-
-  .wp-sw-cache-suggest-file span {
-    font-size: smaller;
-    color: #fc0;
-    font-weight: bold;
-  }
-
-  .wp-sw-cache-file-size,
-  .wp-sw-cache-file-recommended {
-    font-size: smaller;
-    color: #999;
-    font-size: italic;
-    display: inline-block;
-    margin-left: 20px;
-  }
-
-  .wp-sw-cache-file-recommended {
-    color: green;
-  }
-
-</style>
 <div class="wrap">
 
   <?php if($submitted) { ?>
@@ -150,7 +110,7 @@ class SW_Cache_Admin {
 
   <h1><?php _e('WordPress Service Worker Cache', 'wpswcache'); ?> (<?php echo SW_Cache_Main::$cache_prefix; ?>)</h1>
 
-  <p><?php _e('WordPress Service Worker Cache is a ultility that harnesses the power of the <a href="https://serviceworke.rs" target="_blank">ServiceWorker API</a> to cache frequently used assets for the purposes of performance and offline viewing.'); ?></p>
+  <p><?php _e('WordPress Service Worker Cache is a utility that harnesses the power of the <a href="https://serviceworke.rs" target="_blank">ServiceWorker API</a> to cache frequently used assets for the purposes of performance and offline viewing.'); ?></p>
 
   <form method="post" action="">
     <input type="hidden" name="wpswcache_form_submitted" value="1">
@@ -266,6 +226,47 @@ class SW_Cache_Admin {
   <button type="button" class="button button-primary wp-sw-cache-clear-caches-button" data-cleared-text="<?php echo esc_attr('Caches cleared: '); ?>"><?php _e('Clear Caches'); ?></button>
 
 </div>
+
+<style>
+  .wp-sw-cache-suggested {
+    background: lightgreen;
+  }
+
+  .wp-sw-cache-suggest-file,
+  .wp-sw-cache-toggle-all,
+  .wp-sw-cache-clear-all {
+    float: right;
+    margin-left: 10px !important;
+  }
+
+  .wp-sw-cache-file-list {
+    max-height: 300px;
+    background: #fefefe;
+    border: 1px solid #ccc;
+    padding: 10px;
+    overflow-y: auto;
+  }
+
+  .wp-sw-cache-suggest-file span {
+    font-size: smaller;
+    color: #fc0;
+    font-weight: bold;
+  }
+
+  .wp-sw-cache-file-size,
+  .wp-sw-cache-file-recommended {
+    font-size: smaller;
+    color: #999;
+    font-size: italic;
+    display: inline-block;
+    margin-left: 20px;
+  }
+
+  .wp-sw-cache-file-recommended {
+    color: green;
+  }
+
+</style>
 
 <script type="text/javascript">
   jQuery('.wp-sw-cache-suggest-file').on('click', function() {
