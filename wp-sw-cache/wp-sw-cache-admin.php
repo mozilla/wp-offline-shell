@@ -75,18 +75,31 @@ class SW_Cache_Admin {
 
     */
 
-
     // Standard CSS file
     if($file_info['name'] === 'style.css') {
-      return sprintf(__('%s is a standard WordPress theme file.'), 'style.css');
+      return array(
+        'verdict' => true,
+        'message' => sprintf(__('%s is a standard WordPress theme file.'), 'style.css')
+      );
+    }
+
+    // screenshot.{png|gif|jpe?g} is standard WP file for admin only, so don't use it
+    if(preg_match('/screenshot\.(gif|png|jpg|jpeg|bmp)/', $file_info['name'])) {
+      return array(
+        'verdict' => false,
+        'message' => sprintf(__('%s is a standard WordPress theme file only used in admin.'), $file_info['name'])
+      );
     }
 
     // "Main level" CSS, JS, and image files are likely important for small theme_files
     if(in_array($file_info['category'], array('css', 'js', 'image')) && strpos($file_info['name'], '/') === false) {
-      return __('Main level assets are likely important in small themes');
+      return array(
+        'verdict' => true,
+        'message' => __('Main level assets are likely important in small themes')
+      );
     }
 
-    return false;
+    return array('verdict' => false, 'message' => '');
   }
 
   function options() {
@@ -200,14 +213,18 @@ class SW_Cache_Admin {
             <?php foreach($category['files'] as $file) { $file_id++; ?>
             <tr>
               <td style="width: 30px;">
-                <input type="checkbox" class="<?php if($file['recommended']) { echo 'recommended'; } ?>" name="wp_sw_cache_files[]" id="wp_sw_cache_files['file_<?php echo $file_id; ?>']" value="<?php echo urlencode($file['name']); ?>" <?php if(in_array($file['name'], $selected_files)) { echo 'checked'; } ?> />
+                <input type="checkbox" class="<?php if($file['recommended']['verdict']) { echo 'recommended'; } ?>" name="wp_sw_cache_files[]" id="wp_sw_cache_files['file_<?php echo $file_id; ?>']" value="<?php echo urlencode($file['name']); ?>" <?php if(in_array($file['name'], $selected_files)) { echo 'checked'; } ?> />
               </td>
               <td>
                 <label for="wp_sw_cache_files['file_<?php echo $file_id; ?>']">
                   <?php echo $file['name']; ?>
                   <span class="wp-sw-cache-file-size"><?php echo ($file['size'] > 0 ? round($file['size']/1024, 2) : 0).'kb'; ?></span>
-                  <?php if($file['recommended']) { ?>
-                    <span class="wp-sw-cache-file-recommended">&#10004; <?php echo $file['recommended']; ?></span>
+                  <?php if($file['recommended']['message']) { ?>
+                    <?php if($file['recommended']['verdict']) { ?>
+                      <span class="wp-sw-cache-file-recommended">&#10004; <?php echo $file['recommended']['message']; ?></span>
+                    <?php } else { ?>
+                      <span class="wp-sw-cache-file-not-recommended">&times; <?php echo $file['recommended']['message']; ?></span>
+                    <?php } ?>
                   <?php } ?>
                 </label>
               </td>
@@ -254,7 +271,8 @@ class SW_Cache_Admin {
   }
 
   .wp-sw-cache-file-size,
-  .wp-sw-cache-file-recommended {
+  .wp-sw-cache-file-recommended,
+  .wp-sw-cache-file-not-recommended {
     font-size: smaller;
     color: #999;
     font-size: italic;
@@ -264,6 +282,9 @@ class SW_Cache_Admin {
 
   .wp-sw-cache-file-recommended {
     color: green;
+  }
+  .wp-sw-cache-file-not-recommended {
+    color: #f00;
   }
 
 </style>
