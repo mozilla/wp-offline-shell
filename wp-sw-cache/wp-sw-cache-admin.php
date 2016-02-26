@@ -79,15 +79,26 @@ class SW_Cache_Admin {
     if($file_info['name'] === 'style.css') {
       return array(
         'verdict' => true,
-        'message' => sprintf(__('%s is a standard WordPress theme file.'), 'style.css')
+        'message' => sprintf(__('%s is a standard WordPress theme file.', 'wpswcache'), 'style.css')
       );
     }
 
-    // screenshot.{png|gif|jpe?g} is standard WP file for admin only, so don't use it
-    if(preg_match('/screenshot\.(gif|png|jpg|jpeg|bmp)/', $file_info['name'])) {
+    // screenshot.{png|gif|jpe?g} and editor-style.css are standard WP files for admin only, so don't use it
+    if(
+      preg_match('/screenshot\.(gif|png|jpg|jpeg|bmp)/', $file_info['name']) ||
+      preg_match('/editor-style.css/', $file_info['name'])
+      ) {
       return array(
         'verdict' => false,
-        'message' => sprintf(__('%s is a standard WordPress theme file only used in admin.'), $file_info['name'])
+        'message' => sprintf(__('%s is a standard WordPress theme file only used in admin.', 'wpswcache'), $file_info['name'])
+      );
+    }
+
+    // Ignore old IE css and font files
+    if(preg_match('/ie-?\d.css/', $file_info['name']) || preg_match('/.eot/', $file_info['name'])) {
+      return array(
+        'verdict' => false,
+        'message' => sprintf(__('%s is likely for legacy Internet Explorer browsers.', 'wpswcache'), $file_info['name'])
       );
     }
 
@@ -95,7 +106,7 @@ class SW_Cache_Admin {
     if(in_array($file_info['category'], array('css', 'js', 'image')) && strpos($file_info['name'], '/') === false) {
       return array(
         'verdict' => true,
-        'message' => __('Main level assets are likely important in small themes')
+        'message' => __('Main level assets are likely important in small themes', 'wpswcache')
       );
     }
 
