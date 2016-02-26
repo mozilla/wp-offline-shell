@@ -75,11 +75,24 @@ class SW_Cache_Admin {
 
     */
 
+    $exploded_path = $file_info['name'];
+    $immediate_name = array_pop(explode('/', $exploded_path));
+    $split_name = explode('.', $immediate_name);
+    $ext = array_pop($split_name);
+    $name_without_extension = implode('/', $split_name);
+    $regex = '/'.preg_quote($name_without_extension, '/').'[-|.](min|compressed).'.$ext.'/';
+    if(count(preg_grep($regex, $all_files))) {
+      return array(
+        'verdict' => false,
+        'message' => __('A matching minified file was found, deferring to minified asset.', 'wpswcache')
+      );
+    }
+
     // Standard CSS file
     if($file_info['name'] === 'style.css') {
       return array(
         'verdict' => true,
-        'message' => sprintf(__('%s is a standard WordPress theme file.', 'wpswcache'), 'style.css')
+        'message' => sprintf(__('%s is a standard WordPress theme file. __('.$regex.')__', 'wpswcache'), 'style.css')
       );
     }
 
@@ -119,7 +132,7 @@ class SW_Cache_Admin {
     if(in_array($file_info['category'], array('css', 'js', 'image')) && substr_count($file_info['name'], '/') < 2) {
       return array(
         'verdict' => true,
-        'message' => __('Main or secondary level assets are likely important in small themes', 'wpswcache')
+        'message' => __('Main or secondary level assets are likely important in most themes', 'wpswcache')
       );
     }
 
