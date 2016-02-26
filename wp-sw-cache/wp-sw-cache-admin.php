@@ -95,7 +95,11 @@ class SW_Cache_Admin {
     }
 
     // Ignore old IE css and font files
-    if(preg_match('/ie-?\d.css/', $file_info['name']) || preg_match('/.eot/', $file_info['name'])) {
+    if(
+      preg_match('/ie-?\d.css/', $file_info['name']) ||
+      preg_match('/.eot/', $file_info['name']) ||
+      preg_match('/html5-?(shiv)?.js/', $file_info['name'])
+      ) {
       return array(
         'verdict' => false,
         'message' => sprintf(__('%s is likely for legacy Internet Explorer browsers.', 'wpswcache'), $file_info['name'])
