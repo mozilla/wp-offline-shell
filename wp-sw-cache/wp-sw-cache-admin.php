@@ -115,11 +115,11 @@ class SW_Cache_Admin {
       );
     }
 
-    // "Main level" CSS, JS, and image files are likely important for small theme_files
-    if(in_array($file_info['category'], array('css', 'js', 'image')) && strpos($file_info['name'], '/') === false) {
+    // "Main" or secondary level CSS, JS, and image files are likely important for small theme_files
+    if(in_array($file_info['category'], array('css', 'js', 'image')) && substr_count($file_info['name'], '/') < 2) {
       return array(
         'verdict' => true,
-        'message' => __('Main level assets are likely important in small themes', 'wpswcache')
+        'message' => __('Main or secondary level assets are likely important in small themes', 'wpswcache')
       );
     }
 
