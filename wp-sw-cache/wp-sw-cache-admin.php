@@ -86,7 +86,7 @@ class SW_Cache_Admin {
     // screenshot.{png|gif|jpe?g} and editor-style.css are standard WP files for admin only, so don't use it
     if(
       preg_match('/screenshot\.(gif|png|jpg|jpeg|bmp)/', $file_info['name']) ||
-      preg_match('/editor-style.css/', $file_info['name'])
+      preg_match('/editor-style\.css/', $file_info['name'])
       ) {
       return array(
         'verdict' => false,
@@ -96,9 +96,9 @@ class SW_Cache_Admin {
 
     // Ignore old IE css and font files
     if(
-      preg_match('/ie-?\d.css/', $file_info['name']) ||
-      preg_match('/.eot/', $file_info['name']) ||
-      preg_match('/html5-?(shiv)?.js/', $file_info['name'])
+      preg_match('/ie-?\d\.css/', $file_info['name']) ||
+      preg_match('/\.eot/', $file_info['name']) ||
+      preg_match('/html5-?(shiv)?\.js/', $file_info['name'])
       ) {
       return array(
         'verdict' => false,
@@ -108,7 +108,7 @@ class SW_Cache_Admin {
 
     // Recommend woff and woff2 fonts
     // http://caniuse.com/#feat=woff2
-    if(preg_match('/.woff2?$/', $file_info['name'])) {
+    if(preg_match('/\.woff2?$/', $file_info['name'])) {
       return array(
         'verdict' => true,
         'message' => sprintf(__('woff2 is high performing and woff is a globally supported fallback', 'wpswcache'), $file_info['name'])
