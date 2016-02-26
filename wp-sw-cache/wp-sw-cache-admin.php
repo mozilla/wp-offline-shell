@@ -102,6 +102,15 @@ class SW_Cache_Admin {
       );
     }
 
+    // Recommend woff and woff2 fonts
+    // http://caniuse.com/#feat=woff2
+    if(preg_match('/.woff2?$/', $file_info['name'])) {
+      return array(
+        'verdict' => true,
+        'message' => sprintf(__('woff2 is high performing and woff is a globally supported fallback', 'wpswcache'), $file_info['name'])
+      );
+    }
+
     // "Main level" CSS, JS, and image files are likely important for small theme_files
     if(in_array($file_info['category'], array('css', 'js', 'image')) && strpos($file_info['name'], '/') === false) {
       return array(
