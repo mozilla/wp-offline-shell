@@ -213,7 +213,11 @@ class SW_Cache_Admin {
 
         $file_id = 0;
         foreach($categories as $category) { ?>
-          <h3><?php echo $category['title']; ?> (<?php echo implode(', ', $category['extensions']); ?>)</h3>
+          <h3>
+            <?php echo $category['title']; ?>
+            (<?php echo implode(', ', $category['extensions']); ?>)
+            <a href="" class="wp-sw-cache-file-all">Select All</a>
+          </h3>
 
           <?php if($category['key'] === 'other') { ?>
             <p><em><?php _e('The following assets, especially <code>.php</code> files, have no value in being cached directly by service workers.'); ?></em></p>
@@ -298,6 +302,12 @@ class SW_Cache_Admin {
     color: #f00;
   }
 
+  .wp-sw-cache-file-all {
+    font-size: 14px;
+    display: inline-block;
+    margin-left: 20px;
+  }
+
 </style>
 
 <script type="text/javascript">
@@ -350,6 +360,11 @@ class SW_Cache_Admin {
       $button.text($button.data('cleared-text') + ' ' + clearedCounter);
       $button[0].disabled = true;
     });
+  });
+
+  jQuery('.wp-sw-cache-file-all').on('click', function(e) {
+    e.preventDefault();
+    jQuery(this.parentNode).next('.files-list').find('input[type=checkbox]').prop('checked', 'checked');
   });
 </script>
 
