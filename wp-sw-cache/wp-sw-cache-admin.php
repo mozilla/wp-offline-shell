@@ -1,6 +1,6 @@
 <?php
 
-load_plugin_textdomain('wpswcache', false, dirname(plugin_basename(__FILE__)) . '/lang');
+load_plugin_textdomain('wpswcache', false, dirname(plugin_basename(__FILE__)).'/lang');
 
 class SW_Cache_Admin {
   private static $instance;
@@ -69,19 +69,7 @@ class SW_Cache_Admin {
   }
 
   function determine_file_recommendation($file_info, $all_files) {
-    /*
-      TODO:
-        -  Detect if a "positive" file has a "-min" version; if so, choose the -min and not the standard file
-
-    */
-
-    $exploded_path = $file_info['name'];
-    $immediate_name = array_pop(explode('/', $exploded_path));
-    $split_name = explode('.', $immediate_name);
-    $ext = array_pop($split_name);
-    $name_without_extension = implode('/', $split_name);
-    $regex = '/'.preg_quote($name_without_extension, '/').'[-|.](min|compressed).'.$ext.'/';
-    if(count(preg_grep($regex, $all_files))) {
+    if(SW_Cache_Recommender::has_min_file($file_info['name'], $all_files)) {
       return array(
         'verdict' => false,
         'message' => __('A matching minified file was found, deferring to minified asset.', 'wpswcache')
@@ -97,10 +85,10 @@ class SW_Cache_Admin {
     }
 
     // screenshot.{png|gif|jpe?g} and editor-style.css are standard WP files for admin only, so don't use it
-    if(
-      preg_match('/screenshot\.(gif|png|jpg|jpeg|bmp)/', $file_info['name']) ||
-      preg_match('/editor-style\.css/', $file_info['name'])
-      ) {
+    if(SW_Cache_Recommender::matches_any_regex(
+      $file_info['name'],
+      array('/screenshot\.(gif|png|jpg|jpeg|bmp)$/', '/editor-style.css$/')
+    )) {
       return array(
         'verdict' => false,
         'message' => sprintf(__('%s is a standard WordPress theme file only used in admin.', 'wpswcache'), $file_info['name'])
@@ -108,11 +96,10 @@ class SW_Cache_Admin {
     }
 
     // Ignore old IE css and font files
-    if(
-      preg_match('/ie-?\d\.css/', $file_info['name']) ||
-      preg_match('/\.eot/', $file_info['name']) ||
-      preg_match('/html5-?(shiv)?\.js/', $file_info['name'])
-      ) {
+    if(SW_Cache_Recommender::matches_any_regex(
+      $file_info['name'],
+      array('/ie-?\d\.css$/', '/\.eot$/', '/html5-?(shiv)?\.js$/')
+    )) {
       return array(
         'verdict' => false,
         'message' => sprintf(__('%s is likely for legacy Internet Explorer browsers.', 'wpswcache'), $file_info['name'])
@@ -121,7 +108,7 @@ class SW_Cache_Admin {
 
     // Recommend woff and woff2 fonts
     // http://caniuse.com/#feat=woff2
-    if(preg_match('/\.woff2?$/', $file_info['name'])) {
+    if(SW_Cache_Recommender::matches_any_regex($file_info['name'], array('/\.woff2?$/'))) {
       return array(
         'verdict' => true,
         'message' => sprintf(__('woff2 is high performing and woff is a globally supported fallback', 'wpswcache'), $file_info['name'])
@@ -323,9 +310,6 @@ class SW_Cache_Admin {
 
   .wp-sw-cache-file-recommended {
     color: green;
-  }
-  .wp-sw-cache-file-not-recommended {
-    color: #f00;
   }
 
   .wp-sw-cache-file-all {

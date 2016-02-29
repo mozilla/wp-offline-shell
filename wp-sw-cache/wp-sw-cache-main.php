@@ -2,6 +2,7 @@
 
 require_once(plugin_dir_path(__FILE__).'wp-sw-cache.php' );
 require_once(plugin_dir_path(__FILE__).'wp-sw-cache-db.php');
+require_once(plugin_dir_path(__FILE__).'wp-sw-cache-recommender.php');
 require_once(plugin_dir_path(__FILE__).'vendor/mozilla/wp-sw-manager/class-wp-sw-manager.php');
 
 load_plugin_textdomain('wpswcache', false, dirname(plugin_basename(__FILE__)) . '/lang');
