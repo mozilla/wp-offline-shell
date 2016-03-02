@@ -6,6 +6,11 @@ localforage = {
         return Promise.resolve(storage[key]);
       },
       setItem: function(key, value) {
+        storage[key] = value;
+        return Promise.resolve();
+      },
+      removeItem: function(key) {
+        delete storage[key];
         return Promise.resolve();
       },
       clear: function() {
