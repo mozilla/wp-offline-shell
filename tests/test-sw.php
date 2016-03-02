@@ -14,14 +14,14 @@ class SW_Tests extends WP_UnitTestCase {
 
 	function test_file_must_exist() {
 		// Step 1:  Set the hash
-		$first_hash = get_option('wp_sw_cache_name');
+		$first_hash = get_option('wp_sw_cache_version');
 
 		// Step 2:  Rename file so to mock that the file has been deleted
 		rename(get_template_directory().'/style.css', get_template_directory().'/style.temp');
 
 		// Step 3:  Get hash
 		SW_Cache_Main::build_sw();
-		$second_hash = get_option('wp_sw_cache_name');
+		$second_hash = get_option('wp_sw_cache_version');
 
 		// Success means the hash was updated because the file was deleted
 		$this->assertTrue($first_hash != $second_hash);
@@ -33,11 +33,11 @@ class SW_Tests extends WP_UnitTestCase {
 	function test_unchanged_files_and_times_generates_same_hash() {
 		// Step 1:  Get hash
 		SW_Cache_Main::build_sw();
-		$first_hash = get_option('wp_sw_cache_name');
+		$first_hash = get_option('wp_sw_cache_version');
 
 		// Step 2:  Do nothing, get the hash again
 		SW_Cache_Main::build_sw();
-		$second_hash = get_option('wp_sw_cache_name');
+		$second_hash = get_option('wp_sw_cache_version');
 
 		// Success means the hashes are the same because nothing has changed
 		$this->assertTrue($first_hash === $second_hash);
@@ -46,7 +46,7 @@ class SW_Tests extends WP_UnitTestCase {
 	function test_file_changed_generates_new_hash() {
 		// Step 1:  Get hash
 		SW_Cache_Main::build_sw();
-		$first_hash = get_option('wp_sw_cache_name');
+		$first_hash = get_option('wp_sw_cache_version');
 
 		// Step 2:  Update a file's contents to nudge the modified time
 		$file_to_edit = get_template_directory().'/style.css';
@@ -55,7 +55,7 @@ class SW_Tests extends WP_UnitTestCase {
 
 		// Step 3:  Get the new hash
 		SW_Cache_Main::build_sw();
-		$second_hash = get_option('wp_sw_cache_name');
+		$second_hash = get_option('wp_sw_cache_version');
 
 		// Success means the hashes are different because a file has changed
 		$this->assertTrue($first_hash !== $second_hash);
@@ -64,7 +64,7 @@ class SW_Tests extends WP_UnitTestCase {
 	function test_changed_file_list_generates_new_hash() {
 		// Step 1:  Get hash
 		SW_Cache_Main::build_sw();
-		$first_hash = get_option('wp_sw_cache_name');
+		$first_hash = get_option('wp_sw_cache_version');
 
 		// Step 2:  Remove the last item from the list
 		$files = get_option('wp_sw_cache_files');
@@ -73,7 +73,7 @@ class SW_Tests extends WP_UnitTestCase {
 
 		// Step 3:  Get the new hash
 		SW_Cache_Main::build_sw();
-		$second_hash = get_option('wp_sw_cache_name');
+		$second_hash = get_option('wp_sw_cache_version');
 
 		// Success means the hashes are different because a file has changed
 		$this->assertTrue($first_hash !== $second_hash);

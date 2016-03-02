@@ -30,7 +30,7 @@ class SW_Cache_DB {
 
   public static function on_uninstall() {
     delete_option('wp_sw_cache_enabled');
-    delete_option('wp_sw_cache_name');
+    delete_option('wp_sw_cache_version');
     delete_option('wp_sw_cache_files');
     delete_option('wp_sw_cache_debug');
   }

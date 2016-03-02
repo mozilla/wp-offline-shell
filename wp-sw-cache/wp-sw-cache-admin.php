@@ -65,7 +65,7 @@ class SW_Cache_Admin {
   }
 
   function show_switch_theme_message() {
-    echo '<div class="update-nag"><p>',  __('You\'ve changed themes; please update your WP ServiceWorker Cache options.', 'swpswcache'), '</p></div>';
+    echo '<div class="update-nag"><p>',  sprintf(__('You\'ve changed themes; please update your <a href="%s">WP ServiceWorker Cache options</a>.', 'swpswcache'), admin_url('options-general.php?page=wp-sw-cache-options')), '</p></div>';
   }
 
   function determine_file_recommendation($file_info, $all_files) {
@@ -145,7 +145,7 @@ class SW_Cache_Admin {
     </div>
   <?php } ?>
 
-  <h1><?php _e('WordPress Service Worker Cache', 'wpswcache'); ?> (<?php echo SW_Cache_Main::$cache_prefix; ?>)</h1>
+  <h1><?php _e('WordPress Service Worker Cache', 'wpswcache'); ?></h1>
 
   <p><?php _e('WordPress Service Worker Cache is a utility that harnesses the power of the <a href="https://serviceworke.rs" target="_blank">ServiceWorker API</a> to cache frequently used assets for the purposes of performance and offline viewing.'); ?></p>
 
@@ -166,12 +166,6 @@ class SW_Cache_Admin {
         <input type="checkbox" name="wp_sw_cache_debug" id="wp_sw_cache_debug" value="1" <?php if(get_option('wp_sw_cache_debug')) echo 'checked'; ?> />
       </td>
     </tr>
-    <tr>
-      <th scope="row"><label for="wp_sw_cache_name"><?php _e('Current Cache Name', 'wpswcache'); ?></label></th>
-      <td>
-        <em><?php echo get_option('wp_sw_cache_name'); ?></em>
-      </td>
-    </tr>
     </table>
 
     <h2><?php _e('Theme Files to Cache', 'wpswcache'); ?> (<code><?php echo get_template(); ?></code>)</h2>
@@ -182,7 +176,6 @@ class SW_Cache_Admin {
       <button type="button" class="button button-primary wp-sw-cache-suggest-file" data-suggested-text="<?php echo esc_attr__('Files Suggested: '); ?>"><?php _e('Suggest Files'); ?> <span>(<?php _e('beta'); ?>)</span></button>
     </p>
 
-    <?php /* <pre><?php print_r($selected_files); ?></pre> */ ?>
     <div class="wp-sw-cache-file-list">
       <?php
         $template_abs_path = get_template_directory();
@@ -268,7 +261,7 @@ class SW_Cache_Admin {
 
   <h2>Clear Caches</h2>
   <p><?php _e('Click the button below to clear any caches created by this plugin.'); ?></p>
-  <button type="button" class="button button-primary wp-sw-cache-clear-caches-button" data-cleared-text="<?php echo esc_attr('Caches cleared: '); ?>"><?php _e('Clear Caches'); ?></button>
+  <button type="button" class="button button-primary wp-sw-cache-clear-caches-button" data-cleared-text="<?php echo esc_attr('Cache Cleared!'); ?>"><?php _e('Clear Local Cache'); ?></button>
 
 </div>
 
@@ -321,6 +314,7 @@ class SW_Cache_Admin {
 </style>
 
 <script type="text/javascript">
+
   jQuery('.wp-sw-cache-suggest-file').on('click', function() {
     // TODO:  More advanced logic
 
@@ -355,7 +349,7 @@ class SW_Cache_Admin {
       return Promise.all(
         cacheNames.map(function(cacheName) {
 
-          if(cacheName.indexOf('<?php echo SW_Cache_Main::$cache_prefix; ?>') != -1) {
+          if(cacheName === '<?php echo SW_Cache_Main::$cache_name; ?>') {
             console.log('Clearing cache: ', cacheName);
             clearedCounter++;
             return caches.delete(cacheName);

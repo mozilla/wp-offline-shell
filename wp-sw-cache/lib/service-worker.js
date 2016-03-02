@@ -1,103 +1,156 @@
-(function(self){
-  var CACHE_PREFIX = '__wp-sw-cache::';
+(function(self, localforage){
 
-  var CACHE_NAME = CACHE_PREFIX + '$name';
-  var CACHE_FILES = $files;
+  // Represents the name of both storage and serviceworker
+  // This shouldn't change because the SW code below is smart enough to
+  // update what's needed and delete what isn't
+  var storageKey = '$name';
 
-  var debug = $debug;
+  var wpSwCache = self.wpSwCache = {
+    // A { url: hash } object which will be used to populate cache
+    // A changed url object will ensure the SW is downloaded when URLs change
+    urls: $urls,
+    // Instance of localForage to save urls and hashes to see if anything has changed
+    storage: localforage.createInstance({ name: storageKey }),
+    // Name of the cache the plugin will use
+    cacheName: storageKey,
+    // Method to cleanse a URL before comparing and caching
+    normalizeAndAnonymize: function(request) {
+      var url = new URL(request.url);
+      if (url.origin !== location.origin) {
+        return request;
+      }
 
-  self.addEventListener('install', function(event) {
-    // Perform install step:  loading each required file into cache
-    event.waitUntil(
-      caches.open(CACHE_NAME)
-        .then(function(cache) {
-          // Add all offline dependencies to the cache
-          if (debug) {
-            console.log('[install] Caches opened, adding all core components to cache');
+      url.search = '';
+      url.fragment = '';
+      return new Request(url, {
+        method: request.method,
+        headers: request.headers,
+        mode: 'no-cors',
+        credentials: request.credentials,
+        cache: request.cache,
+        redirect: request.redirect,
+        referrer: request.referrer,
+        integrity: request.integrity
+      });
+    },
+    // Detect if a URL should be cacheable and in the desired URL list
+    shouldBeHandled: function(request) {
+      return request.method === 'GET' && (request.url in this.urls);
+    },
+    // Adds URLs to cache and localForage if the file has changed or needs to be added
+    update: function() {
+      // For every URL (file) the user wants cached...
+      return Promise.all(Object.keys(this.urls).map(url => {
+        var hash = this.urls[url];
+
+        // ... get its hash from storage ...
+        return this.storage.getItem(url).then(value => {
+          // ... and if nothing has changed, just move on to the next URL
+          if(value === hash) {
+            this.log('[update] Hash unchanged, doing nothing: ', url);
+            return Promise.resolve();
           }
-          return cache.addAll(CACHE_FILES);
-        })
-        .then(function() {
-          if (debug) {
-            console.log('[install] All required resources have been cached, we\'re good!');
-          }
-          return self.skipWaiting();
-        })
-    );
-  });
 
-  self.addEventListener('fetch', function(event) {
-    var request = event.request;
-    var lookupRequest = normalizeAndAnonymize(request);
-    if (!shouldBeHandled(lookupRequest)) {
-      return;
-    }
+          this.log('[update] Hash changed or new URL, adding to cache "' + this.cacheName +'" : ' , url);
+          // ... Add the new/updated URL and its response to cache ...
+          return self.caches.open(this.cacheName).then(cache => {
+            return cache.add(url).then(() => {
+              // ... and once it's successful add its hash to storage
+              return this.storage.setItem(url, hash).catch(e => {
+                this.warn('[update] error: ', e)
+              });
+            })
+            .catch(e => {
+              this.warn('[update] error: ', e)
+            });
+          })
+          .catch(e => {
+            this.warn('[update] error: ', e)
+          });
 
-    event.respondWith(
-      caches.match(lookupRequest)
-        .then(function(response) {
-          if (response) {
-            if (debug) {
-              console.log('[fetch] Returning from ServiceWorker cache: ', event.request.url);
+        })
+        .catch(e => {
+          this.warn('[update] error: ', e)
+        });
+      }));
+    },
+    // Check each URL in cache and delete anything that shouldn't be there anymore
+    // i.e. the user unchecked a file's box in admin
+    removeOldUrls: function() {
+      return caches.open(this.cacheName).then(cache =>  {
+        return cache.keys().then(keys =>  {
+          return Promise.all(keys.map(key => {
+            if(!(key.url in this.urls)) {
+              this.log('[removeOldUrls] Removing URL no longer desired: ', key.url);
+              return cache.delete(key).then(() => {
+                return this.storage.removeItem(key.url).catch(e => {
+                  this.warn('[removeOldUrls] error: ', e)
+                });
+              })
+              .catch(e => {
+                this.warn('[removeOldUrls] error: ', e)
+              });
             }
-            return response;
-          }
-          if (debug) {
-            console.error('[fetch] Cache miss! This should not happen. It implies problems caching.');
-          }
-          return fetch(event.request);
-        }
-      )
-    );
-  });
-
-  function normalizeAndAnonymize(request) {
-    var url = new URL(request.url);
-    if (url.origin !== location.origin) {
-      return request;
-    }
-
-    url.search = '';
-    url.fragment = '';
-    return new Request(url, {
-      method: request.method,
-      headers: request.headers,
-      mode: 'no-cors',
-      credentials: request.credentials,
-      cache: request.cache,
-      redirect: request.redirect,
-      referrer: request.referrer,
-      integrity: request.integrity
-    });
-  }
-
-  function shouldBeHandled(request) {
-    return request.method === 'GET' && CACHE_FILES.indexOf(request.url) !== -1;
-  }
-
-  self.addEventListener('activate', function(event) {
-    if (debug) {
-      console.log('[activate] Activating ServiceWorker!');
-    }
-
-    // Clean up old cache in the background
-    caches.keys().then(function(cacheNames) {
-      return Promise.all(
-        cacheNames.map(function(cacheName) {
-          if(cacheName.startsWith(CACHE_PREFIX) && cacheName != CACHE_NAME) {
-            if (debug) {
-              console.log('[activate] Deleting out of date cache:', cacheName);
-            }
-            return caches.delete(cacheName);
-          }
+            return Promise.resolve();
+          }));
         })
+        .catch(e => {
+          this.warn('[removeOldUrls] error: ', e)
+        })
+      })
+      .catch(e => {
+        this.warn('[removeOldUrls] error: ', e)
+      });
+    },
+    // Install step that kicks off adding/updating URLs in cache and storage
+    onInstall: function(event) {
+      this.log('[install] Event triggered');
+      this.log('[install] Initial cache list is: ', this.urls);
+
+      event.waitUntil(Promise.all([self.skipWaiting(), this.update()]));
+    },
+    // Does cleanup after everything went well
+    onActivate: function(event) {
+      this.log('[activate] Event triggered');
+      event.waitUntil(Promise.all([self.clients.claim(), this.removeOldUrls()]));
+    },
+    // Manages returning responses from cache or the server
+    onFetch: function(event) {
+      var request = event.request;
+      var lookupRequest = this.normalizeAndAnonymize(request);
+      if (!this.shouldBeHandled(lookupRequest)) {
+        return;
+      }
+
+      event.respondWith(
+        caches.match(lookupRequest)
+          .then(response => {
+            if (response) {
+              this.log('[fetch] Cache hit, returning from ServiceWorker cache: ', event.request.url);
+              return response;
+            }
+            this.log('[fetch] Cache miss, retrieving from server: ', event.request.url);
+            return fetch(event.request);
+          })
+          .catch(e => {
+            this.warn('[fetch] error: ', e);
+          })
       );
-    });
-
-    // Calling claim() to force a "controllerchange" event on navigator.serviceWorker
-    if (debug) {
-      console.log('[activate] Claiming this ServiceWorker!');
     }
-    event.waitUntil(self.clients.claim());
+  };
+
+  // Add debugging functions
+  ['log', 'warn'].forEach(function(level) {
+    wpSwCache[level] = function() {
+      if($debug) {
+        console[level].apply(console, arguments);
+      }
+    };
   });
-})(self);
+
+  // Kick off the event listeners
+  self.addEventListener('install', wpSwCache.onInstall.bind(wpSwCache));
+  self.addEventListener('activate', wpSwCache.onActivate.bind(wpSwCache));
+  self.addEventListener('fetch', wpSwCache.onFetch.bind(wpSwCache));
+
+})(self, localforage);
