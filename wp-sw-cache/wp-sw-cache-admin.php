@@ -22,16 +22,21 @@ class SW_Cache_Admin {
     if(isset($_POST['wpswcache_form_submitted'])) {
 
       // Update "enabled" status
-      update_option('wp_sw_cache_enabled', isset($_POST['wp_sw_cache_enabled']));
+      update_option('wp_sw_cache_enabled', isset($_POST['wp_sw_cache_enabled']) ? intval($_POST['wp_sw_cache_enabled']) : 0);
 
       // Update "debug" status
-      update_option('wp_sw_cache_debug', isset($_POST['wp_sw_cache_debug']));
+      update_option('wp_sw_cache_debug', isset($_POST['wp_sw_cache_debug']) ? intval($_POST['wp_sw_cache_debug']) : 0);
 
       // Update files to cache
       $files = array();
       if(isset($_POST['wp_sw_cache_files'])) {
         foreach($_POST['wp_sw_cache_files'] as $file) {
-          array_push($files, urldecode($file));
+          $file = urldecode($file);
+          // Ensure the file actually exists
+          $tfile = get_template_directory().'/'.$file;
+          if(file_exists($tfile)) {
+            array_push($files, $file);
+          }
         }
       }
       update_option('wp_sw_cache_files', $files);
@@ -58,7 +63,7 @@ class SW_Cache_Admin {
 
   public function on_switch_theme() {
     if(get_option('wp_sw_cache_enabled')) {
-      update_option('wp_sw_cache_enabled', false);
+      update_option('wp_sw_cache_enabled', 0);
       update_option('wp_sw_cache_files', array());
       add_action('admin_notices', array($this, 'show_switch_theme_message'));
     }
@@ -157,13 +162,13 @@ class SW_Cache_Admin {
     <tr>
       <th scope="row"><label for="wp_sw_cache_enabled"><?php _e('Enable Service Worker', 'wpswcache'); ?></label></th>
       <td>
-        <input type="checkbox" name="wp_sw_cache_enabled" id="wp_sw_cache_enabled" value="1" <?php if(get_option('wp_sw_cache_enabled')) echo 'checked'; ?> autofocus />
+        <input type="checkbox" name="wp_sw_cache_enabled" id="wp_sw_cache_enabled" value="1" <?php if(intval(get_option('wp_sw_cache_enabled'))) echo 'checked'; ?> autofocus />
       </td>
     </tr>
     <tr>
       <th scope="row"><label for="wp_sw_cache_debug"><?php _e('Enable Debug Messages', 'wpswcache'); ?></label></th>
       <td>
-        <input type="checkbox" name="wp_sw_cache_debug" id="wp_sw_cache_debug" value="1" <?php if(get_option('wp_sw_cache_debug')) echo 'checked'; ?> />
+        <input type="checkbox" name="wp_sw_cache_debug" id="wp_sw_cache_debug" value="1" <?php if(intval(get_option('wp_sw_cache_debug'))) echo 'checked'; ?> />
       </td>
     </tr>
     </table>
@@ -220,8 +225,8 @@ class SW_Cache_Admin {
         $file_id = 0;
         foreach($categories as $category) { ?>
           <h3>
-            <?php echo $category['title']; ?>
-            (<?php echo implode(', ', $category['extensions']); ?>)
+            <?php echo esc_html($category['title']); ?>
+            (<?php echo esc_html(implode(', ', $category['extensions'])); ?>)
             <a href="" class="wp-sw-cache-file-all">Select All</a>
           </h3>
 
@@ -234,17 +239,17 @@ class SW_Cache_Admin {
             <?php foreach($category['files'] as $file) { $file_id++; ?>
             <tr>
               <td style="width: 30px;">
-                <input type="checkbox" class="<?php if($file['recommended']['verdict']) { echo 'recommended'; } ?>" name="wp_sw_cache_files[]" id="wp_sw_cache_files['file_<?php echo $file_id; ?>']" value="<?php echo urlencode($file['name']); ?>" <?php if(in_array($file['name'], $selected_files)) { echo 'checked'; } ?> />
+                <input type="checkbox" class="<?php if($file['recommended']['verdict']) { echo 'recommended'; } ?>" name="wp_sw_cache_files[]" id="wp_sw_cache_files['file_<?php echo $file_id; ?>']" value="<?php echo esc_attr(urlencode($file['name'])); ?>" <?php if(in_array($file['name'], $selected_files)) { echo 'checked'; } ?> />
               </td>
               <td>
                 <label for="wp_sw_cache_files['file_<?php echo $file_id; ?>']">
-                  <?php echo $file['name']; ?>
+                  <?php echo esc_html($file['name']); ?>
                   <span class="wp-sw-cache-file-size"><?php echo ($file['size'] > 0 ? round($file['size']/1024, 2) : 0).'kb'; ?></span>
                   <?php if($file['recommended']['message']) { ?>
                     <?php if($file['recommended']['verdict']) { ?>
-                      <span class="wp-sw-cache-file-recommended">&#10004; <?php echo $file['recommended']['message']; ?></span>
+                      <span class="wp-sw-cache-file-recommended">&#10004; <?php echo esc_html($file['recommended']['message']); ?></span>
                     <?php } else { ?>
-                      <span class="wp-sw-cache-file-not-recommended">&times; <?php echo $file['recommended']['message']; ?></span>
+                      <span class="wp-sw-cache-file-not-recommended">&times; <?php echo esc_html($file['recommended']['message']); ?></span>
                     <?php } ?>
                   <?php } ?>
                 </label>
@@ -349,7 +354,7 @@ class SW_Cache_Admin {
       return Promise.all(
         cacheNames.map(function(cacheName) {
 
-          if(cacheName === '<?php echo SW_Cache_Main::$cache_name; ?>') {
+          if(cacheName === '<?php echo esc_html(SW_Cache_Main::$cache_name); ?>') {
             console.log('Clearing cache: ', cacheName);
             clearedCounter++;
             return caches.delete(cacheName);
