@@ -97,8 +97,9 @@ describe('tests', function() {
 
   it('Debug option works properly', function() {
     // We don't want to muddle up the user's console if they option isn't on
-    wpSwCache.debug = false;
     console.log = console.warn = sinon.spy();
+    
+    wpSwCache.debug = false;
     wpSwCache.log('Hello');
     assert.equal(console.log.callCount, 0);
 
