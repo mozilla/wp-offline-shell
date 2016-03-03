@@ -63,8 +63,8 @@ class SW_Cache_Admin {
 
   public function on_switch_theme() {
     if(get_option('wp_sw_cache_enabled')) {
-      update_option('wp_sw_cache_enabled', 0);
-      update_option('wp_sw_cache_files', array());
+      update_option('wp_sw_cache_enabled', SW_Cache_DB::$options['wp_sw_cache_enabled']);
+      update_option('wp_sw_cache_files', SW_Cache_DB::$options['wp_sw_cache_files']);
       add_action('admin_notices', array($this, 'show_switch_theme_message'));
     }
   }
