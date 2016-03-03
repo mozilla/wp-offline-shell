@@ -9,6 +9,8 @@
     // A { url: hash } object which will be used to populate cache
     // A changed url object will ensure the SW is downloaded when URLs change
     urls: $urls,
+    // Allowed to use console functions?
+    debug: $debug,
     // Instance of localForage to save urls and hashes to see if anything has changed
     storage: localforage.createInstance({ name: storageKey }),
     // Name of the cache the plugin will use
@@ -56,21 +58,13 @@
           return self.caches.open(this.cacheName).then(cache => {
             return cache.add(url).then(() => {
               // ... and once it's successful add its hash to storage
-              return this.storage.setItem(url, hash).catch(e => {
-                this.warn('[update] error: ', e)
-              });
-            })
-            .catch(e => {
-              this.warn('[update] error: ', e)
+              return this.storage.setItem(url, hash);
             });
-          })
-          .catch(e => {
-            this.warn('[update] error: ', e)
           });
 
         })
         .catch(e => {
-          this.warn('[update] error: ', e)
+          this.warn('[update] error: ', e);
         });
       }));
     },
@@ -81,25 +75,21 @@
         return cache.keys().then(keys =>  {
           return Promise.all(keys.map(key => {
             if(!(key.url in this.urls)) {
-              this.log('[removeOldUrls] Removing URL no longer desired: ', key.url);
-              return cache.delete(key).then(() => {
-                return this.storage.removeItem(key.url).catch(e => {
-                  this.warn('[removeOldUrls] error: ', e)
-                });
-              })
-              .catch(e => {
-                this.warn('[removeOldUrls] error: ', e)
-              });
+              return this.removeOldUrl(cache, key);
             }
             return Promise.resolve();
           }));
         })
-        .catch(e => {
-          this.warn('[removeOldUrls] error: ', e)
-        })
       })
       .catch(e => {
-        this.warn('[removeOldUrls] error: ', e)
+        this.warn('[removeOldUrls] error: ', e);
+      });
+    },
+    // Removes one individual URL from cache and storage
+    removeOldUrl: function(cache, request) {
+      this.log('[removeOldUrl] Removing URL no longer desired: ', request.url);
+      return cache.delete(request).then(() => {
+        return this.storage.removeItem(request.url);
       });
     },
     // Install step that kicks off adding/updating URLs in cache and storage
@@ -142,7 +132,7 @@
   // Add debugging functions
   ['log', 'warn'].forEach(function(level) {
     wpSwCache[level] = function() {
-      if($debug) {
+      if(this.debug) {
         console[level].apply(console, arguments);
       }
     };
