@@ -85,7 +85,7 @@ class SW_Cache_Admin {
     if($file_info['name'] === 'style.css') {
       return array(
         'verdict' => true,
-        'message' => sprintf(__('%s is a standard WordPress theme file. __('.$regex.')__', 'service-worker-cache'), 'style.css')
+        'message' => sprintf(__('%s is a standard WordPress theme file.', 'service-worker-cache'), 'style.css')
       );
     }
 
