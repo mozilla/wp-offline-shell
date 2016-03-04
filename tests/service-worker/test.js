@@ -7,8 +7,8 @@ describe('tests', function() {
   beforeEach(function(done) {
     // Needed to prevent SW from bombing on what needs to be replaced
     self.$urls = {
-      'http://localhost:9876/socket.io/socket.io.js': '328947234',
-      'http://localhost:9876/karma.js': '32897324923'
+      'http://localhost:9876/socket.io/socket.io.js': '1111',
+      'http://localhost:9876/karma.js': '2222'
     };
     self.$debug = 1;
 
@@ -98,7 +98,7 @@ describe('tests', function() {
   it('Debug option works properly', function() {
     // We don't want to muddle up the user's console if they option isn't on
     console.log = console.warn = sinon.spy();
-    
+
     wpSwCache.debug = false;
     wpSwCache.log('Hello');
     assert.equal(console.log.callCount, 0);
