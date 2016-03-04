@@ -132,7 +132,7 @@
       });
 
       event.respondWith(
-        Promise.race([ fromCache, fromNetwork, ])
+        Promise.race([ fromCache, fromNetwork ])
         .then(function(response) {
           return response || fromNetwork;
         })
