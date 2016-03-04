@@ -10,6 +10,7 @@ class SW_Cache_Recommender {
     if (!self::$instance) {
       self::$instance = new self();
     }
+    return self::$instance;
   }
 
   public static function has_min_file($file_name, $all_files) {

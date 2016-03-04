@@ -15,6 +15,7 @@ class SW_Cache_Admin {
     if (!self::$instance) {
       self::$instance = new self();
     }
+    return self::$instance;
   }
 
   public function process_options() {
