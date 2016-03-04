@@ -112,19 +112,28 @@
         return;
       }
 
+      var fromNetwork = fetch(request);
+
+      var fromCache = caches.match(lookupRequest)
+        .then(response => {
+          if (response) {
+            this.log('[fetch] Cache hit, returning from ServiceWorker cache: ', event.request.url);
+            return response;
+          }
+
+          this.log('[fetch] Cache miss, retrieving from server: ', event.request.url);
+        })
+        .catch(e => {
+          this.warn('[fetch] error: ', e);
+        });
+
       event.respondWith(
-        caches.match(lookupRequest)
-          .then(response => {
-            if (response) {
-              this.log('[fetch] Cache hit, returning from ServiceWorker cache: ', event.request.url);
-              return response;
-            }
-            this.log('[fetch] Cache miss, retrieving from server: ', event.request.url);
-            return fetch(event.request);
-          })
-          .catch(e => {
-            this.warn('[fetch] error: ', e);
-          })
+        Promise.race([ fromCache, fromNetwork, ])
+        .then(function(response) {
+          if (!response) {
+            return fromNetwork;
+          }
+        })
       );
     }
   };
