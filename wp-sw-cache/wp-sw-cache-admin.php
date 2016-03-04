@@ -58,7 +58,7 @@ class SW_Cache_Admin {
   }
 
   public function on_admin_menu() {
-    add_options_page(__('WP SW Cache', 'service-worker-cache'), __('WP SW Cache', 'service-worker-cache'), 'manage_options', 'wp-sw-cache-options', array($this, 'options'));
+    add_options_page(__('Service Worker Cache', 'service-worker-cache'), __('Service Worker Cache', 'service-worker-cache'), 'manage_options', 'wp-sw-cache-options', array($this, 'options'));
   }
 
   public function on_switch_theme() {
@@ -150,9 +150,9 @@ class SW_Cache_Admin {
     </div>
   <?php } ?>
 
-  <h1><?php _e('WordPress Service Worker Cache', 'service-worker-cache'); ?></h1>
+  <h1><?php _e('Service Worker Cache', 'service-worker-cache'); ?></h1>
 
-  <p><?php _e('WordPress Service Worker Cache is a utility that harnesses the power of the <a href="https://serviceworke.rs" target="_blank">ServiceWorker API</a> to cache frequently used assets for the purposes of performance and offline viewing.'); ?></p>
+  <p><?php _e('Service Worker Cache is a utility that harnesses the power of the <a href="https://serviceworke.rs" target="_blank">ServiceWorker API</a> to cache frequently used assets for the purposes of performance and offline viewing.'); ?></p>
 
   <form method="post" action="">
     <input type="hidden" name="wpswcache_form_submitted" value="1">

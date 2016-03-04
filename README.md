@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/darkwing/wp-sw-cache.svg?branch=master)](https://travis-ci.org/darkwing/wp-sw-cache)
 
-# WordPress Service Worker Cache
+# Service Worker Cache
 A WordPress plugin for caching theme assets via a service worker for the sake of performance and offline functionality.
 
 This plugin is currently experimental and should only be used with developers with [Service Worker knowledge](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers).
