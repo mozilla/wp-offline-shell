@@ -112,27 +112,29 @@
         return;
       }
 
-      var fromNetwork = fetch(request);
+      var fromNetwork = fetch(request)
+      .then(response => {
+        this.log('[fetch] Retrieved from server: ', event.request.url);
+        return response;
+      });
 
       var fromCache = caches.match(lookupRequest)
-        .then(response => {
-          if (response) {
-            this.log('[fetch] Cache hit, returning from ServiceWorker cache: ', event.request.url);
-            return response;
-          }
+      .then(response => {
+        if (response) {
+          this.log('[fetch] Cache hit, returning from ServiceWorker cache: ', event.request.url);
+          return response;
+        }
 
-          this.log('[fetch] Cache miss, retrieving from server: ', event.request.url);
-        })
-        .catch(e => {
-          this.warn('[fetch] error: ', e);
-        });
+        this.log('[fetch] Cache miss, retrieving from server: ', event.request.url);
+      })
+      .catch(e => {
+        this.warn('[fetch] error: ', e);
+      });
 
       event.respondWith(
         Promise.race([ fromCache, fromNetwork, ])
         .then(function(response) {
-          if (!response) {
-            return fromNetwork;
-          }
+          return response || fromNetwork;
         })
       );
     }
