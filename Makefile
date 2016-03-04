@@ -1,4 +1,4 @@
-.PHONY: reinstall test
+.PHONY: reinstall test l10n
 
 WP_CLI = tools/wp-cli.phar
 PHPUNIT = tools/phpunit.phar
@@ -17,6 +17,14 @@ test-sw: node_modules
 
 node_modules:
 	npm install
+
+l10n: tools/wordpress-repo
+	php tools/wordpress-repo/tools/i18n/makepot.php wp-plugin wp-sw-cache
+	mv wp-sw-cache.pot wp-sw-cache/lang/service-worker-cache.pot
+
+tools/wordpress-repo:
+	mkdir -p tools
+	cd tools && svn checkout https://develop.svn.wordpress.org/trunk/ && mv trunk wordpress-repo
 
 tools/wp-cli.phar:
 	mkdir -p tools
