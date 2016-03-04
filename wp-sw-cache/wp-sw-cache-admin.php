@@ -179,6 +179,7 @@ class SW_Cache_Admin {
       <th scope="row"><label for="wp_sw_cache_race_enabled"><?php _e('Enable cache-network race', 'service-worker-cache'); ?></label></th>
       <td>
         <input type="checkbox" name="wp_sw_cache_race_enabled" id="wp_sw_cache_race_enabled" value="1" <?php if(intval(get_option('wp_sw_cache_race_enabled'))) echo 'checked'; ?> />
+        <p class="description">Enable this option if you want the service worker to retrieve a response from the cache and the network at the same time, instead of only from the cache. This improves performance for users with fast connections, at the expense of an increased load on your server.</p>
       </td>
     </tr>
     </table>
