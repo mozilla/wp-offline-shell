@@ -13,8 +13,8 @@ class SW_Cache_Recommender {
   }
 
   public static function has_min_file($file_name, $all_files) {
-    $exploded_path = $file_name;
-    $immediate_name = array_pop(explode('/', $exploded_path));
+    $exploded_path = explode('/', $file_name);
+    $immediate_name = array_pop($exploded_path);
     $split_name = explode('.', $immediate_name);
     $ext = array_pop($split_name);
     $name_without_extension = implode('/', $split_name);
