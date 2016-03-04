@@ -21,6 +21,7 @@ class SW_Cache_Main {
     if (!self::$instance) {
       self::$instance = new self();
     }
+    return self::$instance;
   }
 
   public static function update_version($name = '') {
