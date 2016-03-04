@@ -151,7 +151,7 @@ class SW_Cache_Admin {
     </div>
   <?php } ?>
 
-  <h1><?php _e('Service Worker Cache', 'service-worker-cache'); ?></h1>
+  <h1><?php _e('Service Worker Cache', 'service-worker-cache'); ?> <code>v<?php echo get_option('wp_sw_cache_version'); ?></code></h1>
 
   <p><?php _e('Service Worker Cache is a utility that harnesses the power of the <a href="https://serviceworke.rs" target="_blank">ServiceWorker API</a> to cache frequently used assets for the purposes of performance and offline viewing.'); ?></p>
 

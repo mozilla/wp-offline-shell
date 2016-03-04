@@ -9,16 +9,16 @@ class SW_Cache_DB {
     // The "style.css" file is a standard WordPress file, so we can safely assume this exists
     'wp_sw_cache_files' => array('styles.css'),
     // Create an initial SW version
-    'wp_sw_cache_version' => '',
+    'wp_sw_cache_version' => '0.1.0',
     // Setting debug initially will help the user understand what the SW is doing via the console
     'wp_sw_cache_debug' => 0
   );
 
   public function __construct() {
-
+    add_action('plugins_loaded', array($this, 'update'));
   }
 
-  public static function getInstance() {
+  public static function init() {
     if (!self::$instance) {
       self::$instance = new self();
     }
@@ -26,9 +26,6 @@ class SW_Cache_DB {
   }
 
   public static function on_activate() {
-    foreach(self::$options as $option => $default) {
-      add_option($option, $default);
-    }
   }
 
   public static function on_deactivate() {
@@ -38,6 +35,20 @@ class SW_Cache_DB {
     foreach(self::$options as $option => $default) {
       delete_option($option);
     }
+  }
+
+  public static function update() {
+    $current_version = self::$options['wp_sw_cache_version'];
+    if($current_version == get_option('wp_sw_cache_version')) {
+      return;
+    }
+
+    // Set defaults
+    foreach(self::$options as $option => $default) {
+      add_option($option, $default);
+    }
+
+    update_option('wp_sw_cache_version', $current_version);
   }
 
 }
