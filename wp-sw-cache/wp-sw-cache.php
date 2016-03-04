@@ -9,13 +9,14 @@ Author: David Walsh
 Author URI:  https://davidwalsh.name
 */
 
-require_once(plugin_dir_path(__FILE__) . 'wp-sw-cache-main.php');
-require_once(plugin_dir_path(__FILE__) . 'wp-sw-cache-db.php');
+require_once(plugin_dir_path(__FILE__).'wp-sw-cache-main.php');
+require_once(plugin_dir_path(__FILE__).'wp-sw-cache-db.php');
 
+SW_Cache_DB::init();
 SW_Cache_Main::init();
 
 if (is_admin()) {
-  require_once(plugin_dir_path(__FILE__) . 'wp-sw-cache-admin.php');
+  require_once(plugin_dir_path(__FILE__).'wp-sw-cache-admin.php');
   SW_Cache_Admin::init();
 }
 
