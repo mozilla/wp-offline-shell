@@ -1,5 +1,5 @@
 === Plugin Name ===
-Contributors: davidwalsh83
+Contributors: davidwalsh83, mozillawebapps
 Donate link: https://davidwalsh.name
 Tags: performance, caching, offline
 Requires at least: 3.0.1
