@@ -11,6 +11,8 @@
     urls: $urls,
     // Allowed to use console functions?
     debug: $debug,
+    // Race cache-network or only cache?
+    raceEnabled: $raceEnabled,
     // Instance of localForage to save urls and hashes to see if anything has changed
     storage: localforage.createInstance({ name: storageKey }),
     // Name of the cache the plugin will use
@@ -112,12 +114,6 @@
         return;
       }
 
-      var fromNetwork = fetch(request)
-      .then(response => {
-        this.log('[fetch] Retrieved from server: ', event.request.url);
-        return response;
-      });
-
       var fromCache = caches.match(lookupRequest)
       .then(response => {
         if (response) {
@@ -131,12 +127,30 @@
         this.warn('[fetch] error: ', e);
       });
 
-      event.respondWith(
-        Promise.race([ fromCache, fromNetwork ])
+      var promise;
+      if (this.raceEnabled) {
+        var fromNetwork = fetch(request)
+        .then(response => {
+          this.log('[fetch] Retrieved from server: ', event.request.url);
+          return response;
+        });
+
+        promise = Promise.race([ fromCache, fromNetwork ])
         .then(function(response) {
+          // If we couldn't find the resource in the cache, we have to wait for the
+          // network request to finish.
           return response || fromNetwork;
-        })
-      );
+        });
+      } else {
+        promise = fromCache
+        .then(function(response) {
+          // If we couldn't find the resource in the cache, we have to perform a
+          // network request.
+          return response || fetch(request);
+        });
+      }
+
+      event.respondWith(promise);
     }
   };
 

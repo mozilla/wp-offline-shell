@@ -28,6 +28,9 @@ class SW_Cache_Admin {
       // Update "debug" status
       update_option('wp_sw_cache_debug', isset($_POST['wp_sw_cache_debug']) ? intval($_POST['wp_sw_cache_debug']) : 0);
 
+      // Update "race enabled" status
+      update_option('wp_sw_cache_race_enabled', isset($_POST['wp_sw_cache_race_enabled']) ? intval($_POST['wp_sw_cache_race_enabled']) : 0);
+
       // Update files to cache
       $files = array();
       if(isset($_POST['wp_sw_cache_files'])) {
@@ -170,6 +173,12 @@ class SW_Cache_Admin {
       <th scope="row"><label for="wp_sw_cache_debug"><?php _e('Enable Debug Messages', 'service-worker-cache'); ?></label></th>
       <td>
         <input type="checkbox" name="wp_sw_cache_debug" id="wp_sw_cache_debug" value="1" <?php if(intval(get_option('wp_sw_cache_debug'))) echo 'checked'; ?> />
+      </td>
+    </tr>
+    <tr>
+      <th scope="row"><label for="wp_sw_cache_race_enabled"><?php _e('Enable cache-network race', 'service-worker-cache'); ?></label></th>
+      <td>
+        <input type="checkbox" name="wp_sw_cache_race_enabled" id="wp_sw_cache_race_enabled" value="1" <?php if(intval(get_option('wp_sw_cache_race_enabled'))) echo 'checked'; ?> />
       </td>
     </tr>
     </table>

@@ -11,7 +11,9 @@ class SW_Cache_DB {
     // Create an initial SW version
     'wp_sw_cache_version' => '',
     // Setting debug initially will help the user understand what the SW is doing via the console
-    'wp_sw_cache_debug' => 0
+    'wp_sw_cache_debug' => 0,
+    // Whether to race cache-network or only cache
+    'wp_sw_cache_race_enabled' => 0,
   );
 
   public function __construct() {
