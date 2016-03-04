@@ -1,3 +1,5 @@
 vendor/
 tools/
 composer.lock
+node_modules/
+wp-sw-cache.zip
