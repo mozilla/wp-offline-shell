@@ -19,33 +19,31 @@ class SW_Cache_Admin {
   }
 
   public function process_options() {
-    // Form submission
-    if(isset($_POST['wpswcache_form_submitted'])) {
-
-      // Update "enabled" status
-      update_option('wp_sw_cache_enabled', isset($_POST['wp_sw_cache_enabled']) ? intval($_POST['wp_sw_cache_enabled']) : 0);
-
-      // Update "debug" status
-      update_option('wp_sw_cache_debug', isset($_POST['wp_sw_cache_debug']) ? intval($_POST['wp_sw_cache_debug']) : 0);
-
-      // Update files to cache
-      $files = array();
-      if(isset($_POST['wp_sw_cache_files'])) {
-        foreach($_POST['wp_sw_cache_files'] as $file) {
-          $file = urldecode($file);
-          // Ensure the file actually exists
-          $tfile = get_template_directory().'/'.$file;
-          if(file_exists($tfile)) {
-            array_push($files, $file);
-          }
-        }
-      }
-      update_option('wp_sw_cache_files', $files);
-
-      return true;
+    if(!isset($_POST['wpswcache_form_submitted'])) {
+      return false;
     }
 
-    return false;
+    // Update "enabled" status
+    update_option('wp_sw_cache_enabled', isset($_POST['wp_sw_cache_enabled']) ? intval($_POST['wp_sw_cache_enabled']) : 0);
+
+    // Update "debug" status
+    update_option('wp_sw_cache_debug', isset($_POST['wp_sw_cache_debug']) ? intval($_POST['wp_sw_cache_debug']) : 0);
+
+    // Update files to cache
+    $files = array();
+    if(isset($_POST['wp_sw_cache_files'])) {
+      foreach($_POST['wp_sw_cache_files'] as $file) {
+        $file = urldecode($file);
+        // Ensure the file actually exists
+        $tfile = get_template_directory().'/'.$file;
+        if(file_exists($tfile)) {
+          $files[] = $file;
+        }
+      }
+    }
+    update_option('wp_sw_cache_files', $files);
+
+    return true;
   }
 
   public function on_admin_notices() {
