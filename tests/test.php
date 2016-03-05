@@ -66,7 +66,7 @@ class SW_Tests extends WP_UnitTestCase {
 		$this->assertTrue($sw_content_1 !== $sw_content_2);
 
 		// Cleanup:  Put the removed item back
-		array_push($files, $last_file);
+		$files[] = $last_file;
 		update_option('wp_sw_cache_files', $files);
 	}
 
