@@ -263,10 +263,6 @@ class SW_Cache_Admin {
     <?php submit_button(__('Save Changes'), 'primary'); ?>
   </form>
 
-  <h2>Clear Caches</h2>
-  <p><?php _e('Click the button below to clear any caches created by this plugin.'); ?></p>
-  <button type="button" class="button button-primary wp-sw-cache-clear-caches-button" data-cleared-text="<?php echo esc_attr('Cache Cleared!'); ?>"><?php _e('Clear Local Cache'); ?></button>
-
 </div>
 
 <style>
@@ -342,32 +338,6 @@ class SW_Cache_Admin {
 
   jQuery('.wp-sw-cache-clear-all').on('click', function() {
     jQuery('.files-list input[type="checkbox"]').prop('checked', '');
-  });
-
-  jQuery('.wp-sw-cache-clear-caches-button').on('click', function() {
-    var clearedCounter = 0;
-    var $button = jQuery(this);
-
-    // Clean up old cache in the background
-    caches.keys().then(function(cacheNames) {
-      return Promise.all(
-        cacheNames.map(function(cacheName) {
-
-          if(cacheName === '<?php echo esc_html(SW_Cache_Main::$cache_name); ?>') {
-            console.log('Clearing cache: ', cacheName);
-            clearedCounter++;
-            return caches.delete(cacheName);
-          }
-          else {
-            console.log('Leaving cache: ' + cacheName);
-            return Promise.resolve();
-          }
-        })
-      );
-    }).then(function() {
-      $button.text($button.data('cleared-text') + ' ' + clearedCounter);
-      $button[0].disabled = true;
-    });
   });
 
   jQuery('.wp-sw-cache-file-all').on('click', function(e) {
