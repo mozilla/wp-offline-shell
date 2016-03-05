@@ -5,8 +5,6 @@ require_once(plugin_dir_path(__FILE__).'wp-sw-cache-db.php');
 require_once(plugin_dir_path(__FILE__).'wp-sw-cache-recommender.php');
 require_once(plugin_dir_path(__FILE__).'vendor/mozilla/wp-sw-manager/class-wp-sw-manager.php');
 
-load_plugin_textdomain('wpswcache', false, dirname(plugin_basename(__FILE__)) . '/lang');
-
 class SW_Cache_Main {
   private static $instance;
   public static $cache_name = '__wp-sw-cache';
@@ -22,14 +20,6 @@ class SW_Cache_Main {
       self::$instance = new self();
     }
     return self::$instance;
-  }
-
-  public static function update_version($name = '') {
-    if(!$name) {
-      $name = time();
-    }
-    update_option('wp_sw_cache_version', $name);
-    return $name;
   }
 
   public static function build_sw() {
@@ -54,10 +44,6 @@ class SW_Cache_Main {
         $urls[get_template_directory_uri().'/'.$file] = (string)filemtime($tfile);
       }
     }
-
-    // Serialize the entire array so we match file with time
-    // This will catch file updates done outside of admin (like updating via FTP)
-    $version = self::update_version(md5(serialize($urls)));
 
     // Template content into the JS file
     $contents = file_get_contents(dirname(__FILE__).'/lib/service-worker.js');
