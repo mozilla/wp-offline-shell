@@ -70,20 +70,6 @@ class SW_Tests extends WP_UnitTestCase {
 		update_option('wp_sw_cache_files', $files);
 	}
 
-	function test_disabled_plugin_returns_nothing() {
-		// Step 1:  Disable the plugin
-		update_option('wp_sw_cache_enabled', false);
-
-		// Step 2:  Get the SW output, which should be nothing
-		$sw_output = SW_Cache_Main::build_sw();
-
-		// Success is no output because the plugin is disabled
-		$this->assertTrue($sw_output === '');
-
-		// Cleanup:  re-enable the plugin
-		update_option('wp_sw_cache_enabled', true);
-	}
-
 	function test_update_runs_on_version_mismatch() {
 		$old_version = '0.0.0';
 		update_option('wp_sw_cache_version', $old_version);

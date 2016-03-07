@@ -10,9 +10,7 @@ class SW_Cache_Main {
   public static $cache_name = '__wp-sw-cache';
 
   public function __construct() {
-    if (get_option('wp_sw_cache_enabled')) {
-      WP_SW_Manager::get_manager()->sw()->add_content(array($this, 'write_sw'));
-    }
+    WP_SW_Manager::get_manager()->sw()->add_content(array($this, 'write_sw'));
   }
 
   public static function init() {
@@ -23,25 +21,23 @@ class SW_Cache_Main {
   }
 
   public static function build_sw() {
-    // Return nothing if the plugin is disabled
-    if(!get_option('wp_sw_cache_enabled')) {
-      return '';
-    }
-
-    $files = get_option('wp_sw_cache_files');
-    if(!$files) {
-      $files = array();
-    }
-
     // Will contain items like 'style.css' => {filemtime() of style.css}
     $urls = array();
 
-    // Ensure that every file directed to be cached still exists
-    foreach($files as $index=>$file) {
-      $tfile = get_template_directory().'/'.$file;
-      if(file_exists($tfile)) {
-        // Use file's last change time in name hash so the SW is updated if any file is updated
-        $urls[get_template_directory_uri().'/'.$file] = (string)filemtime($tfile);
+    // Get files and validate they are of proper type
+    $files = get_option('wp_sw_cache_files');
+    if(!$files || !is_array($files)) {
+      $files = array();
+    }
+
+    // Ensure that every file requested to be cached still exists
+    if(get_option('wp_sw_cache_enabled')) {
+      foreach($files as $index => $file) {
+        $tfile = get_template_directory().'/'.$file;
+        if(file_exists($tfile)) {
+          // Use file's last change time in name hash so the SW is updated if any file is updated
+          $urls[get_template_directory_uri().'/'.$file] = (string)filemtime($tfile);
+        }
       }
     }
 
