@@ -4,7 +4,7 @@ Donate link: https://davidwalsh.name
 Tags: performance, caching, offline
 Requires at least: 3.0.1
 Tested up to: 4.4.2
-Stable tag: 0.1.0
+Stable tag: 0.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -44,6 +44,9 @@ It's best to update the plugin file options when you've added a new file to your
 Of course! Service Workers are an emerging technology so this plugin should be updated often based on feedback from developers using WordPress in different ways
 
 == Changelog ==
+
+= 0.1.1 =
+* Adding logic to clear storage for old URLs within the service worker
 
 = 0.1 =
 * Initial release of plugin

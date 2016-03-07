@@ -9,7 +9,7 @@ class SW_Cache_DB {
     // The "style.css" file is a standard WordPress file, so we can safely assume this exists
     'wp_sw_cache_files' => array('styles.css'),
     // Create an initial SW version
-    'wp_sw_cache_version' => '0.1.0',
+    'wp_sw_cache_version' => '0.1.1',
     // Setting debug initially will help the user understand what the SW is doing via the console
     'wp_sw_cache_debug' => 0
   );

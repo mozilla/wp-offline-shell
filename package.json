@@ -1,6 +1,6 @@
 {
   "name": "wp-sw-cache",
-  "version": "0.2.0",
+  "version": "0.1.1",
   "description": "A WordPress plugin for selecting theme assets to be cached by service workers",
   "main": "index.js",
   "directories": {
