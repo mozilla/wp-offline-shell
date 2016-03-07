@@ -3,7 +3,7 @@
 Plugin Name: Service Worker Cache
 Plugin URI: https://github.com/darkwing/wp-sw-cache
 Description: This WordPress plugin provides a method for caching theme assets via a service worker.
-Version: 0.2
+Version: 0.1.1
 Text Domain: service-worker-cache
 Author: David Walsh
 Author URI:  https://davidwalsh.name
