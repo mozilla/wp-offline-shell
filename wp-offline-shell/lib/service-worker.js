@@ -5,7 +5,7 @@
   // update what's needed and delete what isn't
   var storageKey = '$name';
 
-  var wpSwCache = self.wpSwCache = {
+  var wpOfflineShell = self.wpOfflineShell = {
     // A { url: hash } object which will be used to populate cache
     // A changed url object will ensure the SW is downloaded when URLs change
     urls: $urls,
@@ -131,7 +131,7 @@
 
   // Add debugging functions
   ['log', 'warn'].forEach(function(level) {
-    wpSwCache[level] = function() {
+    wpOfflineShell[level] = function() {
       if(this.debug) {
         console[level].apply(console, arguments);
       }
@@ -139,8 +139,8 @@
   });
 
   // Kick off the event listeners
-  self.addEventListener('install', wpSwCache.onInstall.bind(wpSwCache));
-  self.addEventListener('activate', wpSwCache.onActivate.bind(wpSwCache));
-  self.addEventListener('fetch', wpSwCache.onFetch.bind(wpSwCache));
+  self.addEventListener('install', wpOfflineShell.onInstall.bind(wpOfflineShell));
+  self.addEventListener('activate', wpOfflineShell.onActivate.bind(wpOfflineShell));
+  self.addEventListener('fetch', wpOfflineShell.onFetch.bind(wpOfflineShell));
 
 })(self, localforage);

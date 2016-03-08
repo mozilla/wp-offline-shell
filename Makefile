@@ -4,10 +4,10 @@ WP_CLI = tools/wp-cli.phar
 PHPUNIT = tools/phpunit.phar
 
 reinstall: $(WP_CLI)
-	$(WP_CLI) plugin uninstall --deactivate wp-sw-cache --path=$(WORDPRESS_PATH)
-	rm -f wp-sw-cache.zip
-	zip wp-sw-cache.zip -r wp-sw-cache/
-	$(WP_CLI) plugin install --activate wp-sw-cache.zip --path=$(WORDPRESS_PATH)
+	$(WP_CLI) plugin uninstall --deactivate wp-offline-shell --path=$(WORDPRESS_PATH)
+	rm -f wp-offline-shell.zip
+	zip wp-offline-shell.zip -r wp-offline-shell/
+	$(WP_CLI) plugin install --activate wp-offline-shell.zip --path=$(WORDPRESS_PATH)
 
 test: $(PHPUNIT)
 	$(PHPUNIT)
@@ -19,8 +19,8 @@ node_modules:
 	npm install
 
 l10n: tools/wordpress-repo
-	php tools/wordpress-repo/tools/i18n/makepot.php wp-plugin wp-sw-cache
-	mv wp-sw-cache.pot wp-sw-cache/lang/service-worker-cache.pot
+	php tools/wordpress-repo/tools/i18n/makepot.php wp-plugin wp-offline-shell
+	mv wp-offline-shell.pot wp-offline-shell/lang/offline-shell.pot
 
 tools/wordpress-repo:
 	mkdir -p tools

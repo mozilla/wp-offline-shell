@@ -2,4 +2,4 @@ vendor/
 tools/
 composer.lock
 node_modules/
-wp-sw-cache.zip
+wp-offline-shell.zip

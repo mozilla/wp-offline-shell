@@ -1,5 +1,5 @@
 {
-    "name": "darkwing/wp-sw-cache",
+    "name": "mozilla/wp-offline-shell",
     "description": "A WordPress plugin for caching theme assets.",
     "authors": [ ],
     "repositories": [

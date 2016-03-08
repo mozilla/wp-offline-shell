@@ -1,13 +1,13 @@
 <?php
 
-require_once(plugin_dir_path(__FILE__).'wp-sw-cache.php' );
-require_once(plugin_dir_path(__FILE__).'wp-sw-cache-db.php');
-require_once(plugin_dir_path(__FILE__).'wp-sw-cache-recommender.php');
+require_once(plugin_dir_path(__FILE__).'wp-offline-shell.php' );
+require_once(plugin_dir_path(__FILE__).'wp-offline-shell-db.php');
+require_once(plugin_dir_path(__FILE__).'wp-offline-shell-recommender.php');
 require_once(plugin_dir_path(__FILE__).'vendor/mozilla/wp-sw-manager/class-wp-sw-manager.php');
 
-class SW_Cache_Main {
+class Offline_Shell_Main {
   private static $instance;
-  public static $cache_name = '__wp-sw-cache';
+  public static $cache_name = '__offline-shell';
 
   public function __construct() {
     WP_SW_Manager::get_manager()->sw()->add_content(array($this, 'write_sw'));
@@ -25,13 +25,13 @@ class SW_Cache_Main {
     $urls = array();
 
     // Get files and validate they are of proper type
-    $files = get_option('wp_sw_cache_files');
+    $files = get_option('offline_shell_files');
     if(!$files || !is_array($files)) {
       $files = array();
     }
 
     // Ensure that every file requested to be cached still exists
-    if(get_option('wp_sw_cache_enabled')) {
+    if(get_option('offline_shell_enabled')) {
       foreach($files as $index => $file) {
         $tfile = get_template_directory().'/'.$file;
         if(file_exists($tfile)) {
@@ -45,7 +45,7 @@ class SW_Cache_Main {
     $contents = file_get_contents(dirname(__FILE__).'/lib/service-worker.js');
     $contents = str_replace('$name', self::$cache_name, $contents);
     $contents = str_replace('$urls', json_encode($urls), $contents);
-    $contents = str_replace('$debug', intval(get_option('wp_sw_cache_debug')), $contents);
+    $contents = str_replace('$debug', intval(get_option('offline_shell_debug')), $contents);
     return $contents;
   }
 

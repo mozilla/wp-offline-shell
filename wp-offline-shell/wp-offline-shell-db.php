@@ -1,17 +1,17 @@
 <?php
 
-class SW_Cache_DB {
+class Offline_Shell_DB {
 
   private static $instance;
   public static $options = array(
     // For v1 we'll prompt the user enable the plugin manually upon activation
-    'wp_sw_cache_enabled' => 0,
+    'offline_shell_enabled' => 0,
     // The "style.css" file is a standard WordPress file, so we can safely assume this exists
-    'wp_sw_cache_files' => array('styles.css'),
+    'offline_shell_files' => array('styles.css'),
     // Create an initial SW version
-    'wp_sw_cache_version' => '0.1.1',
+    'offline_shell_version' => '0.2',
     // Setting debug initially will help the user understand what the SW is doing via the console
-    'wp_sw_cache_debug' => 0
+    'offline_shell_debug' => 0
   );
 
   public function __construct() {
@@ -38,8 +38,8 @@ class SW_Cache_DB {
   }
 
   public static function update() {
-    $current_version = self::$options['wp_sw_cache_version'];
-    if($current_version == get_option('wp_sw_cache_version')) {
+    $current_version = self::$options['offline_shell_version'];
+    if($current_version == get_option('offline_shell_version')) {
       return;
     }
 
@@ -48,7 +48,7 @@ class SW_Cache_DB {
       add_option($option, $default);
     }
 
-    update_option('wp_sw_cache_version', $current_version);
+    update_option('offline_shell_version', $current_version);
   }
 
 }

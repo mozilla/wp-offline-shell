@@ -1,6 +1,6 @@
 {
-  "name": "wp-sw-cache",
-  "version": "0.1.1",
+  "name": "wp-offline-shell",
+  "version": "0.2.0",
   "description": "A WordPress plugin for selecting theme assets to be cached by service workers",
   "main": "index.js",
   "directories": {
@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/darkwing/wp-sw-cache.git"
+    "url": "git+https://github.com/mozilla/wp-offline-shell.git"
   },
   "keywords": [
     "wordpress",
@@ -34,7 +34,7 @@
   "author": "David Walsh",
   "license": "GPL-2.0",
   "bugs": {
-    "url": "https://github.com/darkwing/wp-sw-cache/issues"
+    "url": "https://github.com/mozilla/wp-offline-shell/issues"
   },
-  "homepage": "https://github.com/darkwing/wp-sw-cache#readme"
+  "homepage": "https://github.com/mozilla/wp-offline-shell#readme"
 }

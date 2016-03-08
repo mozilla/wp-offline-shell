@@ -1,9 +1,7 @@
-[![Build Status](https://travis-ci.org/darkwing/wp-sw-cache.svg?branch=master)](https://travis-ci.org/darkwing/wp-sw-cache)
+[![Build Status](https://travis-ci.org/mozilla/wp-offline-shell.svg?branch=master)](https://travis-ci.org/mozilla/wp-offline-shell)
 
-# Service Worker Cache
+# Offline Shell
 A WordPress plugin for caching theme assets via a service worker for the sake of performance and offline functionality.
-
-This plugin is currently experimental and should only be used with developers with [Service Worker knowledge](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers).
 
 ## Build
 
@@ -12,7 +10,7 @@ then simply invoke `composer install`.
 
 ## Installation and Usage
 
-Assuming the build step completed successfully, place the `wp-sw-cache` directory inside your WordPress instance's `wp-content/plugins directory`.
+Assuming the build step completed successfully, place the `wp-offline-shell` directory inside your WordPress instance's `wp-content/plugins directory`.
 
 With the plugin in the WordPress directory structure:
 
@@ -48,7 +46,7 @@ make test-sw
 
 ## Contribution and Bugs
 
-Contributions are welcome!  You can file pull requests or or issues at [this repository](https://github.com/darkwing/wp-sw-cache).
+Contributions are welcome!  You can file pull requests or or issues at [this repository](https://github.com/mozilla/wp-offline-shell).
 
 ## Related WordPress Plugins
 
