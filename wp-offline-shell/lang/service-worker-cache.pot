@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WP Service Worker Cache 0.2\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-sw-cache\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/offline-shell\n"
 "POT-Creation-Date: 2016-03-04 16:11:55+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -12,58 +12,58 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: wp-sw-cache-admin.php:52
+#: offline-shell-admin.php:52
 msgid ""
 "Service Worker is enabled but no files have been selected for caching.  To "
 "take full advantage of this plugin, <a href=\"%s\">please select files to "
 "cache</a>."
 msgstr ""
 
-#: wp-sw-cache-admin.php:56
+#: offline-shell-admin.php:56
 msgid ""
 "The ServiceWorker API requires a secure origin (HTTPS or localhost).  Your "
 "Service Worker may not work."
 msgstr ""
 
-#: wp-sw-cache-admin.php:61
+#: offline-shell-admin.php:61
 msgid "WP SW Cache"
 msgstr ""
 
-#: wp-sw-cache-admin.php:73
+#: offline-shell-admin.php:73
 msgid ""
 "You've changed themes; please update your <a href=\"%s\">WP ServiceWorker "
 "Cache options</a>."
 msgstr ""
 
-#: wp-sw-cache-admin.php:80
+#: offline-shell-admin.php:80
 msgid "A matching minified file was found, deferring to minified asset."
 msgstr ""
 
-#: wp-sw-cache-admin.php:99
+#: offline-shell-admin.php:99
 msgid "%s is a standard WordPress theme file only used in admin."
 msgstr ""
 
-#: wp-sw-cache-admin.php:110
+#: offline-shell-admin.php:110
 msgid "%s is likely for legacy Internet Explorer browsers."
 msgstr ""
 
-#: wp-sw-cache-admin.php:119
+#: offline-shell-admin.php:119
 msgid "woff2 is high performing and woff is a globally supported fallback"
 msgstr ""
 
-#: wp-sw-cache-admin.php:127
+#: offline-shell-admin.php:127
 msgid "Main or secondary level assets are likely important in most themes"
 msgstr ""
 
-#: wp-sw-cache-admin.php:149
+#: offline-shell-admin.php:149
 msgid "Your settings have been saved."
 msgstr ""
 
-#: wp-sw-cache-admin.php:153
+#: offline-shell-admin.php:153
 msgid "WordPress Service Worker Cache"
 msgstr ""
 
-#: wp-sw-cache-admin.php:155
+#: offline-shell-admin.php:155
 msgid ""
 "WordPress Service Worker Cache is a utility that harnesses the power of the "
 "<a href=\"https://serviceworke.rs\" target=\"_blank\">ServiceWorker API</a> "
@@ -71,87 +71,87 @@ msgid ""
 "viewing."
 msgstr ""
 
-#: wp-sw-cache-admin.php:160
+#: offline-shell-admin.php:160
 msgid "ServiceWorker Cache Settings"
 msgstr ""
 
-#: wp-sw-cache-admin.php:163
+#: offline-shell-admin.php:163
 msgid "Enable Service Worker"
 msgstr ""
 
-#: wp-sw-cache-admin.php:169
+#: offline-shell-admin.php:169
 msgid "Enable Debug Messages"
 msgstr ""
 
-#: wp-sw-cache-admin.php:176
+#: offline-shell-admin.php:176
 msgid "Theme Files to Cache"
 msgstr ""
 
-#: wp-sw-cache-admin.php:178
+#: offline-shell-admin.php:178
 msgid ""
 "Select theme assets (typically JavaScript, CSS, fonts, and image files) that "
 "are used on a majority of pages."
 msgstr ""
 
-#: wp-sw-cache-admin.php:179
+#: offline-shell-admin.php:179
 msgid "Select All Files"
 msgstr ""
 
-#: wp-sw-cache-admin.php:180
+#: offline-shell-admin.php:180
 msgid "Clear All Files"
 msgstr ""
 
-#: wp-sw-cache-admin.php:181
+#: offline-shell-admin.php:181
 msgid "Files Suggested: "
 msgstr ""
 
-#: wp-sw-cache-admin.php:181
+#: offline-shell-admin.php:181
 msgid "Suggest Files"
 msgstr ""
 
-#: wp-sw-cache-admin.php:181
+#: offline-shell-admin.php:181
 msgid "beta"
 msgstr ""
 
-#: wp-sw-cache-admin.php:190
+#: offline-shell-admin.php:190
 msgid "CSS Files"
 msgstr ""
 
-#: wp-sw-cache-admin.php:191
+#: offline-shell-admin.php:191
 msgid "JavaScript Files"
 msgstr ""
 
-#: wp-sw-cache-admin.php:192
+#: offline-shell-admin.php:192
 msgid "Font Files"
 msgstr ""
 
-#: wp-sw-cache-admin.php:193
+#: offline-shell-admin.php:193
 msgid "Image Files"
 msgstr ""
 
-#: wp-sw-cache-admin.php:194
+#: offline-shell-admin.php:194
 msgid "Other Files"
 msgstr ""
 
-#: wp-sw-cache-admin.php:234
+#: offline-shell-admin.php:234
 msgid ""
 "The following assets, especially <code>.php</code> files, have no value in "
 "being cached directly by service workers."
 msgstr ""
 
-#: wp-sw-cache-admin.php:260
+#: offline-shell-admin.php:260
 msgid "No matching files found."
 msgstr ""
 
-#: wp-sw-cache-admin.php:264
+#: offline-shell-admin.php:264
 msgid "Save Changes"
 msgstr ""
 
-#: wp-sw-cache-admin.php:268
+#: offline-shell-admin.php:268
 msgid "Click the button below to clear any caches created by this plugin."
 msgstr ""
 
-#: wp-sw-cache-admin.php:269
+#: offline-shell-admin.php:269
 msgid "Clear Local Cache"
 msgstr ""
 
@@ -160,7 +160,7 @@ msgid "WP Service Worker Cache"
 msgstr ""
 
 #. Plugin URI of the plugin/theme
-msgid "https://github.com/darkwing/wp-sw-cache"
+msgid "https://github.com/darkwing/offline-shell"
 msgstr ""
 
 #. Description of the plugin/theme
