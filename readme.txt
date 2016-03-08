@@ -1,10 +1,10 @@
 === Plugin Name ===
 Contributors: davidwalsh83, mozillawebapps
 Donate link: https://davidwalsh.name
-Tags: performance, caching, offline
+Tags: performance, cache, offline
 Requires at least: 3.0.1
 Tested up to: 4.4.2
-Stable tag: 0.1.1
+Stable tag: 0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ A WordPress plugin for caching theme assets via a service worker for the sake of
 
 == Description ==
 
-Service Worker Cache is a WordPress plugin for using the [ServiceWorker API](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers "Learn more") to cache theme files for performance and offline purposes.
+Offline Shell is a WordPress plugin for using the [ServiceWorker API](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers "Learn more") to cache theme files for performance and offline purposes.
 
 The WordPress admin can select which files to cache, update the cache list at any time, and see their site performance improve while ensuring important assets are available offline.
 
@@ -20,9 +20,9 @@ The WordPress admin can select which files to cache, update the cache list at an
 
 Installation of the plugin is simple:
 
-1. Upload the plugin files to the `/wp-content/plugins/wp-sw-cache` directory, or install the plugin through the WordPress plugins screen directly.
+1. Upload the plugin files to the `/wp-content/plugins/wp-offline-shell` directory, or install the plugin through the WordPress plugins screen directly.
 2. Activate the plugin through the 'Plugins' screen in WordPress
-3. Use the Settings->Service Worker Cache screen to configure the plugin
+3. Use the Settings->Offline Shell screen to configure the plugin
 4. Check the "Enable Service Worker" checkbox and then select individual files you'd like cached.  These assets should be files you use on most pages.
 
 == Frequently Asked Questions ==

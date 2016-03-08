@@ -1,6 +1,6 @@
 <?php
 
-class SW_Cache_Recommender {
+class Offline_Shell_Recommender {
   private static $instance;
 
   public function __construct() {
