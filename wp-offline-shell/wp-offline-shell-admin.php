@@ -22,14 +22,18 @@ class Offline_Shell_Admin {
   public function get_files_ajax() {
     // If they've asked for files, just output the file HTML
     if(isset($_POST['data']) && $_POST['data'] === 'files') {
-      echo $this->options_files();
+      $this->options_files();
     }
+    exit();
   }
 
   public function process_options() {
     if(!isset($_POST['offline_shell_form_submitted'])) {
       return false;
     }
+
+    // Check nonce to avoid hacks
+    check_admin_referer('offline-shell-admin');
 
     // Update "enabled" status
     update_option('offline_shell_enabled', isset($_POST['offline_shell_enabled']) ? intval($_POST['offline_shell_enabled']) : 0);
@@ -188,6 +192,7 @@ class Offline_Shell_Admin {
     </div>
     <input type="hidden" name="offline_shell_files_loaded" id="offline_shell_files_loaded" value="0">
 
+    <?php wp_nonce_field('offline-shell-admin'); ?>
     <?php submit_button(__('Save Changes'), 'primary'); ?>
   </form>
 
