@@ -152,13 +152,13 @@ class Offline_Shell_Admin {
 
   <?php if($submitted) { ?>
     <div class="updated">
-      <p><?php _e('Your settings have been saved.'); ?></p>
+      <p><?php _e('Your settings have been saved.', 'offline-shell'); ?></p>
     </div>
   <?php } ?>
 
   <h1><?php _e('Offline Shell', 'offline-shell'); ?> <code>v<?php echo get_option('offline_shell_version'); ?></code></h1>
 
-  <p><?php _e('Offline Shell is a utility that harnesses the power of the <a href="https://serviceworke.rs" target="_blank">ServiceWorker API</a> to cache frequently used assets for the purposes of performance and offline viewing.'); ?></p>
+  <p><?php _e('Offline Shell is a utility that harnesses the power of the <a href="https://serviceworke.rs" target="_blank">ServiceWorker API</a> to cache frequently used assets for the purposes of performance and offline viewing.', 'offline-shell'); ?></p>
 
   <form method="post" action="">
     <input type="hidden" name="offline_shell_form_submitted" value="1">
@@ -184,7 +184,7 @@ class Offline_Shell_Admin {
       <?php _e('Select theme assets (typically JavaScript, CSS, fonts, and image files) that are used on a majority of pages.', 'offline-shell'); ?>
       <button type="button" class="button button-primary offline-shell-toggle-all" disabled><?php _e('Select All Files', 'offline-shell'); ?></button>
       <button type="button" class="button button-primary offline-shell-clear-all"  disabled><?php _e('Clear All Files', 'offline-shell'); ?></button>
-      <button type="button" class="button button-primary offline-shell-suggest-file" disabled data-suggested-text="<?php echo esc_attr__('Files Suggested: ', 'offline-shell'); ?>"><?php _e('Suggest Files'); ?> <span>(<?php _e('beta'); ?>)</span></button>
+      <button type="button" class="button button-primary offline-shell-suggest-file" disabled data-suggested-text="<?php echo esc_attr__('Files Suggested: ', 'offline-shell'); ?>"><?php _e('Suggest Files', 'offline-shell'); ?> <span>(<?php _e('beta'); ?>)</span></button>
     </p>
 
     <div class="offline-shell-file-list" id="offline-shell-file-list">
@@ -193,7 +193,7 @@ class Offline_Shell_Admin {
     <input type="hidden" name="offline_shell_files_loaded" id="offline_shell_files_loaded" value="0">
 
     <?php wp_nonce_field('offline-shell-admin'); ?>
-    <?php submit_button(__('Save Changes'), 'primary'); ?>
+    <?php submit_button(__('Save Changes', 'offline-shell'), 'primary'); ?>
   </form>
 
 </div>
@@ -349,7 +349,7 @@ class Offline_Shell_Admin {
       </h3>
 
       <?php if($category['key'] === 'other') { ?>
-        <p><em><?php _e('The following assets, especially <code>.php</code> files, have no value in being cached directly by service workers.'); ?></em></p>
+        <p><em><?php _e('The following assets, especially <code>.php</code> files, have no value in being cached directly by service workers.', 'offline-shell'); ?></em></p>
       <?php } ?>
 
       <?php if(count($category['files'])) { ?>
