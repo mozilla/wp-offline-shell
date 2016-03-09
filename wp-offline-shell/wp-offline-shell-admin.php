@@ -9,6 +9,7 @@ class Offline_Shell_Admin {
     add_action('admin_menu', array($this, 'on_admin_menu'));
     add_action('admin_notices', array($this, 'on_admin_notices'));
     add_action('after_switch_theme', array($this, 'on_switch_theme'));
+    add_action('wp_ajax_offline_shell_files', array($this, 'get_files_ajax'));
   }
 
   public static function init() {
@@ -16,6 +17,13 @@ class Offline_Shell_Admin {
       self::$instance = new self();
     }
     return self::$instance;
+  }
+
+  public function get_files_ajax() {
+    // If they've asked for files, just output the file HTML
+    if(isset($_POST['data']) && $_POST['data'] === 'files') {
+      echo $this->options_files();
+    }
   }
 
   public function process_options() {
@@ -29,20 +37,21 @@ class Offline_Shell_Admin {
     // Update "debug" status
     update_option('offline_shell_debug', isset($_POST['offline_shell_debug']) ? intval($_POST['offline_shell_debug']) : 0);
 
-    // Update files to cache
-    $files = array();
-    if(isset($_POST['offline_shell_files'])) {
-      foreach($_POST['offline_shell_files'] as $file) {
-        $file = urldecode($file);
-        // Ensure the file actually exists
-        $tfile = get_template_directory().'/'.$file;
-        if(file_exists($tfile)) {
-          $files[] = $file;
+    // Update files to cache *only* if the file listing loaded properly
+    if(isset($_POST['offline_shell_files_loaded']) && intval($_POST['offline_shell_files_loaded']) === 1) {
+      $files = array();
+      if(isset($_POST['offline_shell_files'])) {
+        foreach($_POST['offline_shell_files'] as $file) {
+          $file = urldecode($file);
+          // Ensure the file actually exists
+          $tfile = get_template_directory().'/'.$file;
+          if(file_exists($tfile)) {
+            $files[] = $file;
+          }
         }
       }
+      update_option('offline_shell_files', $files);
     }
-    update_option('offline_shell_files', $files);
-
     return true;
   }
 
@@ -133,12 +142,6 @@ class Offline_Shell_Admin {
   function options() {
     $submitted = $this->process_options();
 
-    // Get default values for file listing
-    $selected_files = get_option('offline_shell_files');
-    if(!$selected_files) {
-      $selected_files = array();
-    }
-
 ?>
 
 <div class="wrap">
@@ -173,92 +176,17 @@ class Offline_Shell_Admin {
     </table>
 
     <h2><?php _e('Theme Files to Cache', 'offline-shell'); ?> (<code><?php echo get_template(); ?></code>)</h2>
-    <p>
+    <p class="offline-shell-buttons">
       <?php _e('Select theme assets (typically JavaScript, CSS, fonts, and image files) that are used on a majority of pages.', 'offline-shell'); ?>
-      <button type="button" class="button button-primary offline-shell-toggle-all"><?php _e('Select All Files'); ?></button>
-      <button type="button" class="button button-primary offline-shell-clear-all"><?php _e('Clear All Files'); ?></button>
-      <button type="button" class="button button-primary offline-shell-suggest-file" data-suggested-text="<?php echo esc_attr__('Files Suggested: '); ?>"><?php _e('Suggest Files'); ?> <span>(<?php _e('beta'); ?>)</span></button>
+      <button type="button" class="button button-primary offline-shell-toggle-all" disabled><?php _e('Select All Files', 'offline-shell'); ?></button>
+      <button type="button" class="button button-primary offline-shell-clear-all"  disabled><?php _e('Clear All Files', 'offline-shell'); ?></button>
+      <button type="button" class="button button-primary offline-shell-suggest-file" disabled data-suggested-text="<?php echo esc_attr__('Files Suggested: ', 'offline-shell'); ?>"><?php _e('Suggest Files'); ?> <span>(<?php _e('beta'); ?>)</span></button>
     </p>
 
-    <div class="offline-shell-file-list">
-      <?php
-        $template_abs_path = get_template_directory();
-        $theme_files = wp_get_theme()->get_files(null, 10); // 10 is arbitrary
-
-        $categories = array(
-          array('key' => 'css', 'title' => __('CSS Files', 'offline-shell'), 'extensions' => array('css'), 'files' => array()),
-          array('key' => 'js', 'title' => __('JavaScript Files', 'offline-shell'), 'extensions' => array('js'), 'files' => array()),
-          array('key' => 'font', 'title' => __('Font Files', 'offline-shell'), 'extensions' => array('woff', 'woff2', 'ttf', 'eot'), 'files' => array()),
-          array('key' => 'image', 'title' => __('Image Files', 'offline-shell'), 'extensions' => array('svg', 'jpg', 'jpeg', 'gif', 'png', 'webp'), 'files' => array()),
-          array('key' => 'other', 'title' => __('Other Files', 'offline-shell'), 'extensions' => array('*'), 'files' => array()) // Needs to be last
-        );
-
-        // Sort the files and place them in their baskets
-        foreach($theme_files as $file => $abs_path) {
-          $file_relative = str_replace(get_theme_root().'/'.get_template().'/', '', $file);
-          $path_info = pathinfo($file_relative);
-          $file_category_found = false;
-
-          // Build array to represent file
-          $file_info = array(
-            'name' => $file_relative,
-            'size' => filesize($abs_path),
-            'absolute' => $abs_path,
-            'path' => $path_info
-          );
-
-          // Categorize the file, use "other" as the fallback
-          foreach($categories as $index=>$category) {
-            if(in_array(strtolower($path_info['extension']), $category['extensions']) || ($file_category_found === false && $category['key'] === 'other')) {
-              // Store the category to help determine recommendation
-              $file_info['category'] = $category['key'];
-              // Determine if we should recommend this file be cached
-              $file_info['recommended'] = self::determine_file_recommendation($file_info, $theme_files);
-              // Add to category array
-              $categories[$index]['files'][] = $file_info;
-              $file_category_found = true;
-            }
-          }
-        }
-
-        $file_id = 0;
-        foreach($categories as $category) { ?>
-          <h3>
-            <?php echo esc_html($category['title']); ?>
-            (<?php echo esc_html(implode(', ', $category['extensions'])); ?>)
-            <a href="" class="offline-shell-file-all">Select All</a>
-          </h3>
-
-          <?php if($category['key'] === 'other') { ?>
-            <p><em><?php _e('The following assets, especially <code>.php</code> files, have no value in being cached directly by service workers.'); ?></em></p>
-          <?php } ?>
-
-          <?php if(count($category['files'])) { ?>
-          <table class="files-list">
-            <?php foreach($category['files'] as $file) { $file_id++; ?>
-            <tr>
-              <td style="width: 30px;">
-                <input type="checkbox" class="<?php if($file['recommended']['verdict']) { echo 'recommended'; } ?>" name="offline_shell_files[]" id="offline_shell_files['file_<?php echo $file_id; ?>']" value="<?php echo esc_attr(urlencode($file['name'])); ?>" <?php if(in_array($file['name'], $selected_files)) { echo 'checked'; } ?> />
-              </td>
-              <td>
-                <label for="offline_shell_files['file_<?php echo $file_id; ?>']">
-                  <?php echo esc_html($file['name']); ?>
-                  <span class="offline-shell-file-size"><?php echo ($file['size'] > 0 ? round($file['size']/1024, 2) : 0).'kb'; ?></span>
-                  <?php if($file['recommended']['message']) { ?>
-                    <?php if($file['recommended']['verdict']) { ?>
-                      <span class="offline-shell-file-recommended">&#10004; <?php echo esc_html($file['recommended']['message']); ?></span>
-                    <?php } else { ?>
-                      <span class="offline-shell-file-not-recommended">&times; <?php echo esc_html($file['recommended']['message']); ?></span>
-                    <?php } ?>
-                  <?php } ?>
-                </label>
-              </td>
-            </tr>
-            <?php } ?>
-          </table>
-          <?php } else { ?><p><?php _e('No matching files found.', 'offline-shell'); ?></p><?php } ?>
-        <?php } ?>
+    <div class="offline-shell-file-list" id="offline-shell-file-list">
+      <p><?php _e('Loading theme files...', 'offline-shell'); ?></p>
     </div>
+    <input type="hidden" name="offline_shell_files_loaded" id="offline_shell_files_loaded" value="0">
 
     <?php submit_button(__('Save Changes'), 'primary'); ?>
   </form>
@@ -315,38 +243,138 @@ class Offline_Shell_Admin {
 
 <script type="text/javascript">
 
-  jQuery('.offline-shell-suggest-file').on('click', function() {
-    // TODO:  More advanced logic
+  // Create event listeners for the file listing helpers
+  jQuery(document.body)
+    .on('click', '.offline-shell-suggest-file', function() {
+      var $this = jQuery(this);
+      var suggestedCounter = 0;
 
-    var $this = jQuery(this);
-    var suggestedCounter = 0;
+      // Suggest main level CSS and JS files
+      var $recommended = jQuery('.files-list input[type="checkbox"].recommended:not(:checked)')
+                          .prop('checked', 'checked')
+                          .closest('tr').addClass('offline-shell-suggested');
 
-    // Suggest main level CSS and JS files
-    var $recommended = jQuery('.files-list input[type="checkbox"].recommended:not(:checked)')
-                        .prop('checked', 'checked')
-                        .closest('tr').addClass('offline-shell-suggested');
+      // Update sugget button now that the process is done
+      $this
+        .text($this.data('suggested-text') + ' ' + $recommended.length)
+        .prop('disabled', 'disabled');
+    })
+    .on('click', '.offline-shell-toggle-all', function() {
+      jQuery('.files-list input[type="checkbox"]').prop('checked', 'checked');
+    })
+    .on('click', '.offline-shell-clear-all', function() {
+      jQuery('.files-list input[type="checkbox"]').prop('checked', '');
+    })
+    .on('click', '.offline-shell-file-all', function(e) {
+      e.preventDefault();
+      jQuery(this.parentNode).next('.files-list').find('input[type=checkbox]').prop('checked', 'checked');
+    });
 
-    // Update sugget button now that the process is done
-    $this
-      .text($this.data('suggested-text') + ' ' + $recommended.length)
-      .prop('disabled', 'disabled');
+  // Load the file listing async so as to not brick the page on huge themes
+  // ajaxurl is a WordPress global JS var
+  jQuery.post(ajaxurl, {
+    action: 'offline_shell_files',
+    data: 'files'
+  }).done(function(response) {
+    // Place the file listing
+    jQuery('#offline-shell-file-list').html(response);
+    // Notify admin that the files have been loaded and placed
+    jQuery('#offline_shell_files_loaded').val(1);
+    // Enable the file control buttons
+    jQuery('.offline-shell-buttons button').removeProp('disabled');
   });
 
-  jQuery('.offline-shell-toggle-all').on('click', function() {
-    jQuery('.files-list input[type="checkbox"]').prop('checked', 'checked');
-  });
-
-  jQuery('.offline-shell-clear-all').on('click', function() {
-    jQuery('.files-list input[type="checkbox"]').prop('checked', '');
-  });
-
-  jQuery('.offline-shell-file-all').on('click', function(e) {
-    e.preventDefault();
-    jQuery(this.parentNode).next('.files-list').find('input[type=checkbox]').prop('checked', 'checked');
-  });
 </script>
 
 <?php
   }
+
+  function options_files() {
+    // Get default values for file listing
+    $selected_files = get_option('offline_shell_files');
+    if(!$selected_files) {
+      $selected_files = array();
+    }
+
+    $template_abs_path = get_template_directory();
+    $theme_files = wp_get_theme()->get_files(null, 10); // 10 is arbitrary
+
+    $categories = array(
+      array('key' => 'css', 'title' => __('CSS Files', 'offline-shell'), 'extensions' => array('css'), 'files' => array()),
+      array('key' => 'js', 'title' => __('JavaScript Files', 'offline-shell'), 'extensions' => array('js'), 'files' => array()),
+      array('key' => 'font', 'title' => __('Font Files', 'offline-shell'), 'extensions' => array('woff', 'woff2', 'ttf', 'eot'), 'files' => array()),
+      array('key' => 'image', 'title' => __('Image Files', 'offline-shell'), 'extensions' => array('svg', 'jpg', 'jpeg', 'gif', 'png', 'webp'), 'files' => array()),
+      array('key' => 'other', 'title' => __('Other Files', 'offline-shell'), 'extensions' => array('*'), 'files' => array()) // Needs to be last
+    );
+
+    // Sort the files and place them in their baskets
+    foreach($theme_files as $file => $abs_path) {
+      $file_relative = str_replace(get_theme_root().'/'.get_template().'/', '', $file);
+      $path_info = pathinfo($file_relative);
+      $file_category_found = false;
+
+      // Build array to represent file
+      $file_info = array(
+        'name' => $file_relative,
+        'size' => filesize($abs_path),
+        'absolute' => $abs_path,
+        'path' => $path_info
+      );
+
+      // Categorize the file, use "other" as the fallback
+      foreach($categories as $index=>$category) {
+        if(in_array(strtolower($path_info['extension']), $category['extensions']) || ($file_category_found === false && $category['key'] === 'other')) {
+          // Store the category to help determine recommendation
+          $file_info['category'] = $category['key'];
+          // Determine if we should recommend this file be cached
+          $file_info['recommended'] = self::determine_file_recommendation($file_info, $theme_files);
+          // Add to category array
+          $categories[$index]['files'][] = $file_info;
+          $file_category_found = true;
+        }
+      }
+    }
+
+    $file_id = 0;
+    foreach($categories as $category) { ?>
+      <h3>
+        <?php echo esc_html($category['title']); ?>
+        (<?php echo esc_html(implode(', ', $category['extensions'])); ?>)
+        <a href="" class="offline-shell-file-all">Select All</a>
+      </h3>
+
+      <?php if($category['key'] === 'other') { ?>
+        <p><em><?php _e('The following assets, especially <code>.php</code> files, have no value in being cached directly by service workers.'); ?></em></p>
+      <?php } ?>
+
+      <?php if(count($category['files'])) { ?>
+      <table class="files-list">
+        <?php foreach($category['files'] as $file) { $file_id++; ?>
+        <tr>
+          <td style="width: 30px;">
+            <input type="checkbox" class="<?php if($file['recommended']['verdict']) { echo 'recommended'; } ?>" name="offline_shell_files[]" id="offline_shell_files['file_<?php echo $file_id; ?>']" value="<?php echo esc_attr(urlencode($file['name'])); ?>" <?php if(in_array($file['name'], $selected_files)) { echo 'checked'; } ?> />
+          </td>
+          <td>
+            <label for="offline_shell_files['file_<?php echo $file_id; ?>']">
+              <?php echo esc_html($file['name']); ?>
+              <span class="offline-shell-file-size"><?php echo ($file['size'] > 0 ? round($file['size']/1024, 2) : 0).'kb'; ?></span>
+              <?php if($file['recommended']['message']) { ?>
+                <?php if($file['recommended']['verdict']) { ?>
+                  <span class="offline-shell-file-recommended">&#10004; <?php echo esc_html($file['recommended']['message']); ?></span>
+                <?php } else { ?>
+                  <span class="offline-shell-file-not-recommended">&times; <?php echo esc_html($file['recommended']['message']); ?></span>
+                <?php } ?>
+              <?php } ?>
+            </label>
+          </td>
+        </tr>
+        <?php } ?>
+      </table>
+      <?php } else { ?><p><?php _e('No matching files found.', 'offline-shell'); ?></p><?php } ?>
+    <?php } ?>
+
+<?php
+  }
+
 }
 ?>
