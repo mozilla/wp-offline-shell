@@ -3,7 +3,7 @@
 Plugin Name: Offline Shell
 Plugin URI: https://github.com/mozilla/offline-shell
 Description: This WordPress plugin provides a method for caching theme assets via a service worker.
-Version: 0.2
+Version: 0.2.1
 Text Domain: offline-shell
 Author: David Walsh
 Author URI:  https://davidwalsh.name
