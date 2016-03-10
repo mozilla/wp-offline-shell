@@ -51,6 +51,6 @@ Contributions are welcome!  You can file pull requests or or issues at [this rep
 
 ## Related WordPress Plugins
 
-  *  [wp-offline-content](https://github.com/delapuente/wp-offline-content) - Save pages for offline reading
+  *  [wp-offline-content](https://wordpress.org/plugins/offline-shell) - Save pages for offline reading
   *  [wp-sw-manager](https://github.com/mozilla/wp-sw-manager) - Shared service worker plugin
-  *  [wp-web-push](https://github.com/mozilla/wp-web-push) - Add push notifications to your WordPress site!
+  *  [wp-web-push](https://wordpress.org/plugins/web-push) - Add push notifications to your WordPress site
