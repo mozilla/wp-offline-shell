@@ -95,7 +95,7 @@
     // Install step that kicks off adding/updating URLs in cache and storage
     onInstall: function(event) {
       this.log('[install] Event triggered');
-      this.log('[install] Initial cache list is: ', this.urls.keys());
+      this.log('[install] Initial cache list is: ', Object.keys(this.urls));
 
       event.waitUntil(Promise.all([self.skipWaiting(), this.update()]));
     },
