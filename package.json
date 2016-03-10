@@ -1,6 +1,6 @@
 {
   "name": "wp-offline-shell",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "A WordPress plugin for selecting theme assets to be cached by service workers",
   "main": "index.js",
   "directories": {

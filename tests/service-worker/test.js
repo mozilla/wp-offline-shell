@@ -118,9 +118,9 @@ describe('tests', function() {
       method: 'POST'
     });
 
-    assert.isTrue(wpOfflineShell.shouldBeHandled(goodRequest));
-    assert.isFalse(wpOfflineShell.shouldBeHandled(badRequest));
-    assert.isFalse(wpOfflineShell.shouldBeHandled(badRequest2));
+    assert.isTrue(wpOfflineShell.shouldBeHandled(goodRequest.method, goodRequest.url));
+    assert.isFalse(wpOfflineShell.shouldBeHandled(badRequest.method, badRequest.url));
+    assert.isFalse(wpOfflineShell.shouldBeHandled(badRequest2.method, badRequest2.url));
   });
 
 });
