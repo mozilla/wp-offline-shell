@@ -4,7 +4,7 @@ Donate link: https://davidwalsh.name
 Tags: performance, cache, offline
 Requires at least: 3.0.1
 Tested up to: 4.4.2
-Stable tag: 0.2.2
+Stable tag: 0.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -43,7 +43,20 @@ It's best to update the plugin file options when you've added a new file to your
 
 Of course! Service Workers are an emerging technology so this plugin should be updated often based on feedback from developers using WordPress in different ways
 
+== Screenshots ==
+
+1. File selection screen -- the admin may choose which files to cache
+2. Debug displays in the console so you know what is and isn't being cached
+3. The Network tab of DevTools shows that the files have been retrieved from cache instead of network
+
 == Changelog ==
+
+= 0.3.0 =
+* Add screenshots for plugin listing
+* Add branding assets for plugin listing
+
+= 0.2.3 =
+* Update JavaScript to prevent error
 
 = 0.2.2 =
 * Loading file listing via AJAX for faster admin load
