@@ -143,12 +143,61 @@ class Offline_Shell_Admin {
     return array('verdict' => false, 'message' => '');
   }
 
+
+  function output_wp_assets() {
+    global $wp_scripts, $wp_styles;
+
+    $cache = array();
+
+    $cache += $this->get_assets( $wp_scripts );
+    $cache += $this->get_assets( $wp_styles );
+
+    print_r($cache);
+  }
+
+
+
+  /**
+   * Returns an array of URLs from a WP_Dependcies instance
+   *
+   * @param WP_Dependencies $assets
+   *
+   * @return array            Array of assets URLs
+   */
+  public function get_assets( WP_Dependencies $assets ) {
+  	$output = array();
+  	foreach( $assets->queue as $handle ) {
+  		$output = array_merge( $this->recurse_deps( $assets, $handle ), $output );
+  	}
+  	return array_filter( array_unique( $output ) );
+  }
+
+
+  /**
+   * Used to recurse through asset dependencies
+   *
+   * @param WP_Dependencies $assets
+   * @param string         $handle The asset handle
+   *
+   * @return array
+   */
+  public function recurse_deps( WP_Dependencies $assets, $handle ) {
+  	$output = array();
+  	$output[ $handle ] = preg_replace( '|^/wp-includes/|', includes_url(), $assets->registered[ $handle ]->src );
+  	foreach( $assets->registered[ $handle ]->deps as $dep ) {
+  		$output = array_merge( $this->recurse_deps( $assets, $dep ), $output );
+  	}
+  	return array_unique( $output );
+  }
+
   function options() {
     $submitted = $this->process_options();
 
 ?>
 
 <div class="wrap">
+
+  <pre><?php $this->whatever(); ?></pre>
 
   <?php if($submitted) { ?>
     <div class="updated">
