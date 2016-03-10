@@ -19,25 +19,16 @@
     normalizeAndAnonymize: function(request) {
       var url = new URL(request.url);
       if (url.origin !== location.origin) {
-        return request;
+        return request.url;
       }
 
       url.search = '';
       url.fragment = '';
-      return new Request(url, {
-        method: request.method,
-        headers: request.headers,
-        mode: 'no-cors',
-        credentials: request.credentials,
-        cache: request.cache,
-        redirect: request.redirect,
-        referrer: request.referrer,
-        integrity: request.integrity
-      });
+      return url;
     },
     // Detect if a URL should be cacheable and in the desired URL list
-    shouldBeHandled: function(request) {
-      return request.method === 'GET' && (request.url in this.urls);
+    shouldBeHandled: function(method, url) {
+      return method === 'GET' && (url in this.urls);
     },
     // Adds URLs to cache and localForage if the file has changed or needs to be added
     update: function() {
@@ -107,14 +98,14 @@
     // Manages returning responses from cache or the server
     onFetch: function(event) {
       var request = event.request;
-      var lookupRequest = this.normalizeAndAnonymize(request);
-      if (!this.shouldBeHandled(lookupRequest)) {
+
+      var url = this.normalizeAndAnonymize(request);
+      if (!this.shouldBeHandled(request.method, url)) {
         return;
       }
 
       event.respondWith(
-        caches.match(lookupRequest)
-          .then(response => {
+        caches.match(url).then(response => {
             if (response) {
               this.log('[fetch] Cache hit, returning from ServiceWorker cache: ', event.request.url);
               return response;
