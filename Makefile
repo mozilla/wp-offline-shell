@@ -1,4 +1,4 @@
-.PHONY: reinstall build npm_install test test-sw generate-pot release version-changelog
+.PHONY: reinstall build npm_install test test-sw release version-changelog
 
 PLUGIN_NAME = wp-offline-shell
 WP_CLI = tools/wp-cli.phar
