@@ -1,4 +1,4 @@
-.PHONY: reinstall build test generate-pot release version-changelog
+.PHONY: reinstall build npm_install test test-sw generate-pot release version-changelog
 
 PLUGIN_NAME = wp-offline-shell
 WP_CLI = tools/wp-cli.phar
@@ -9,8 +9,7 @@ reinstall: $(WP_CLI) build
 	$(WP_CLI) plugin uninstall --deactivate $(PLUGIN_NAME) --path=$(WORDPRESS_PATH)
 	$(WP_CLI) plugin install --activate $(PLUGIN_NAME).zip --path=$(WORDPRESS_PATH)
 
-build: $(COMPOSER)
-	npm install
+build: $(COMPOSER) npm_install
 	$(COMPOSER) install
 	rm -rf build $(PLUGIN_NAME).zip
 	cp -r $(PLUGIN_NAME)/ build/
@@ -22,6 +21,12 @@ build: $(COMPOSER)
 
 test: $(PHPUNIT) build
 	$(PHPUNIT)
+
+test-sw: npm_install
+	node node_modules/karma/bin/karma start karma.conf
+
+npm_install:
+	npm install
 
 version-changelog:
 	./version-changelog.js $(PLUGIN_NAME)
