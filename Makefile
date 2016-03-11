@@ -1,38 +1,50 @@
-.PHONY: reinstall test l10n
+.PHONY: reinstall build test generate-pot release version-changelog
 
+PLUGIN_NAME = wp-offline-shell
 WP_CLI = tools/wp-cli.phar
 PHPUNIT = tools/phpunit.phar
+COMPOSER = tools/composer.phar
 
-reinstall: $(WP_CLI)
-	$(WP_CLI) plugin uninstall --deactivate wp-offline-shell --path=$(WORDPRESS_PATH)
-	rm -f wp-offline-shell.zip
-	zip wp-offline-shell.zip -r wp-offline-shell/
-	$(WP_CLI) plugin install --activate wp-offline-shell.zip --path=$(WORDPRESS_PATH)
+reinstall: $(WP_CLI) build
+	$(WP_CLI) plugin uninstall --deactivate $(PLUGIN_NAME) --path=$(WORDPRESS_PATH)
+	$(WP_CLI) plugin install --activate $(PLUGIN_NAME).zip --path=$(WORDPRESS_PATH)
 
-test: $(PHPUNIT)
+build: $(COMPOSER)
+	npm install
+	$(COMPOSER) install
+	rm -rf build $(PLUGIN_NAME).zip
+	cp -r $(PLUGIN_NAME)/ build/
+	mkdir -p build/vendor/mozilla/wp-sw-manager
+	cp vendor/mozilla/wp-sw-manager/*.php build/vendor/mozilla/wp-sw-manager
+	cp -r vendor/mozilla/wp-sw-manager/lib build/vendor/mozilla/wp-sw-manager/
+	cd build/ && zip $(PLUGIN_NAME).zip -r *
+	mv build/$(PLUGIN_NAME).zip $(PLUGIN_NAME).zip
+
+test: $(PHPUNIT) build
 	$(PHPUNIT)
 
-test-sw: node_modules
-	$(NODE) node_modules/karma/bin/karma start karma.conf
+version-changelog:
+	./version-changelog.js
 
-node_modules:
-	npm install
-
-l10n: tools/wordpress-repo
-	php tools/wordpress-repo/tools/i18n/makepot.php wp-plugin wp-offline-shell
-	mv wp-offline-shell.pot wp-offline-shell/lang/offline-shell.pot
+release: build tools/wordpress-repo version-changelog build
 
 tools/wordpress-repo:
 	mkdir -p tools
 	cd tools && svn checkout https://develop.svn.wordpress.org/trunk/ && mv trunk wordpress-repo
 
-tools/wp-cli.phar:
+$(COMPOSER):
+	mkdir -p tools
+	wget -P tools -N https://getcomposer.org/composer.phar
+	chmod +x $(COMPOSER)
+
+$(WP_CLI):
 	mkdir -p tools
 	wget -P tools -N https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
 	chmod +x $(WP_CLI)
 
-tools/phpunit.phar:
+$(PHPUNIT):
 	mkdir -p tools
 	wget -P tools -N https://phar.phpunit.de/phpunit-old.phar
-	mv tools/phpunit-old.phar tools/phpunit.phar
+	mv tools/phpunit-old.phar $(PHPUNIT)
 	chmod +x $(PHPUNIT)
+
