@@ -24,7 +24,7 @@ test: $(PHPUNIT) build
 	$(PHPUNIT)
 
 version-changelog:
-	./version-changelog.js
+	./version-changelog.js $(PLUGIN_NAME)
 
 release: build tools/wordpress-repo version-changelog build
 

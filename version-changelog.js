@@ -9,6 +9,12 @@ var rl = readline.createInterface({
   output: process.stdout
 });
 
+var pluginName = process.argv[2];
+var pluginSlug = pluginName.substr(3);
+var mainPHPFile = pluginName + '/' + pluginName + '.php';
+var readmeFile = pluginName + '/readme.txt';
+var generatedPOTFile = pluginName + '.pot';
+var targetPOTFile = pluginName + '/lang/' + pluginSlug + '.pot';
 var version;
 var changelog = [];
 
@@ -34,11 +40,11 @@ function askChangelog() {
 
 function writeFiles() {
   // Update version in the plugin's main file.
-  var pluginMain = fs.readFileSync('wp-web-push/wp-web-push.php', 'utf8');
+  var pluginMain = fs.readFileSync(mainPHPFile, 'utf8');
   var indexStart = pluginMain.indexOf('Version: ') + 'Version: '.length;
   var indexEnd = pluginMain.indexOf('\n', indexStart);
   pluginMain = pluginMain.substring(0, indexStart) + version + pluginMain.substring(indexEnd);
-  fs.writeFileSync('wp-web-push/wp-web-push.php', pluginMain);
+  fs.writeFileSync(mainPHPFile, pluginMain);
 
   // Update version in the package.json file.
   var packageJson = JSON.parse(fs.readFileSync('package.json', 'utf8'));
@@ -46,21 +52,29 @@ function writeFiles() {
   fs.writeFileSync('package.json', JSON.stringify(packageJson, null, 2) + '\n');
 
   // Update readme.txt to add changelog.
-  var readmeTxt = fs.readFileSync('wp-web-push/readme.txt', 'utf8');
+  var readmeTxt = fs.readFileSync(readmeFile, 'utf8');
   var indexChangelog = readmeTxt.indexOf('== Changelog ==') + '== Changelog =='.length + 1;
   readmeTxt = readmeTxt.substring(0, indexChangelog) + '= ' + version + ' =\n' + changelog.join('\n') + '\n\n' + readmeTxt.substring(indexChangelog);
-  fs.writeFileSync('wp-web-push/readme.txt', readmeTxt);
+  fs.writeFileSync(readmeFile, readmeTxt);
 
   commitChanges();
 }
 
 function generatePOT() {
-  childProcess.execSync('php tools/wordpress-repo/tools/i18n/makepot.php wp-plugin wp-web-push');
-  childProcess.execSync('mv wp-web-push.pot wp-web-push/lang/web-push.pot');
+  childProcess.execSync('php tools/wordpress-repo/tools/i18n/makepot.php wp-plugin ' + pluginName);
+  childProcess.execSync('mv ' + generatedPOTFile + ' ' + targetPOTFile);
+
+  console.log('php tools/wordpress-repo/tools/i18n/makepot.php wp-plugin ' + pluginName);
+  console.log('mv ' + generatedPOTFile + ' ' + targetPOTFile);
 }
 
 function commitChanges() {
-  var files = 'package.json wp-web-push/lang/web-push.pot wp-web-push/readme.txt wp-web-push/wp-web-push.php';
+  var files = [
+    'package.json',
+    targetPOTFile,
+    readmeFile,
+    mainPHPFile,
+  ].join(' ');
 
   generatePOT();
   childProcess.execSync('git diff ' + files, { stdio: [ process.stdin, process.stdout, process.stderr ] });
