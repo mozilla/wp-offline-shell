@@ -60,6 +60,11 @@ class Offline_Shell_Admin {
   }
 
   public function on_admin_notices() {
+    if (!current_user_can('manage_options')) {
+      // There's no point in showing notices to users that can't modify the options.
+      return;
+    }
+
     if(get_option('offline_shell_enabled') && !count(get_option('offline_shell_files'))) {
       echo '<div class="update-nag"><p>', sprintf(__('Offline Shell is enabled but no files have been selected for caching.  To take full advantage of this plugin, <a href="%s">please select files to cache</a>.', 'offline-shell'), admin_url('options-general.php?page=offline-shell-options')),'</p></div>';
     }
