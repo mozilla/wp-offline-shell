@@ -4,6 +4,7 @@ load_plugin_textdomain('offline-shell', false, dirname(plugin_basename(__FILE__)
 
 class Offline_Shell_Admin {
   private static $instance;
+  private $submitted = false;
 
   public function __construct() {
     add_action('admin_menu', array($this, 'on_admin_menu'));
@@ -31,6 +32,8 @@ class Offline_Shell_Admin {
     if(!isset($_POST['offline_shell_form_submitted'])) {
       return false;
     }
+
+    $this->submitted = true;
 
     // Check nonce to avoid hacks
     check_admin_referer('offline-shell-admin');
@@ -70,7 +73,8 @@ class Offline_Shell_Admin {
   }
 
   public function on_admin_menu() {
-    add_options_page(__('Offline Shell', 'offline-shell'), __('Offline Shell', 'offline-shell'), 'manage_options', 'offline-shell-options', array($this, 'options'));
+    $plugin_page = add_options_page(__('Offline Shell', 'offline-shell'), __('Offline Shell', 'offline-shell'), 'manage_options', 'offline-shell-options', array($this, 'options'));
+    add_action('admin_head-'. $plugin_page, array($this, 'process_options'));
   }
 
   public function on_switch_theme() {
@@ -144,13 +148,12 @@ class Offline_Shell_Admin {
   }
 
   function options() {
-    $submitted = $this->process_options();
 
 ?>
 
 <div class="wrap">
 
-  <?php if($submitted) { ?>
+  <?php if($this->submitted) { ?>
     <div class="updated">
       <p><?php _e('Your settings have been saved.', 'offline-shell'); ?></p>
     </div>
