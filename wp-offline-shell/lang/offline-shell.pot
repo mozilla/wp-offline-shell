@@ -1,10 +1,10 @@
-# Copyright (C) 2016 WP Service Worker Cache
-# This file is distributed under the same license as the WP Service Worker Cache package.
+# Copyright (C) 2016 Offline Shell
+# This file is distributed under the same license as the Offline Shell package.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Service Worker Cache 0.2\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/offline-shell\n"
-"POT-Creation-Date: 2016-03-04 16:11:55+00:00\n"
+"Project-Id-Version: Offline Shell 123.213.123\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-offline-shell\n"
+"POT-Creation-Date: 2016-03-11 12:11:16+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,155 +12,148 @@ msgstr ""
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 
-#: offline-shell-admin.php:52
+#: wp-offline-shell-admin.php:64
 msgid ""
-"Service Worker is enabled but no files have been selected for caching.  To "
+"Offline Shell is enabled but no files have been selected for caching.  To "
 "take full advantage of this plugin, <a href=\"%s\">please select files to "
 "cache</a>."
 msgstr ""
 
-#: offline-shell-admin.php:56
+#: wp-offline-shell-admin.php:68
 msgid ""
 "The ServiceWorker API requires a secure origin (HTTPS or localhost).  Your "
 "Service Worker may not work."
 msgstr ""
 
-#: offline-shell-admin.php:61
-msgid "WP SW Cache"
+#. #-#-#-#-#  wp-offline-shell.pot (Offline Shell 123.213.123)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
+#: wp-offline-shell-admin.php:73 wp-offline-shell-admin.php:159
+msgid "Offline Shell"
 msgstr ""
 
-#: offline-shell-admin.php:73
+#: wp-offline-shell-admin.php:85
 msgid ""
 "You've changed themes; please update your <a href=\"%s\">WP ServiceWorker "
 "Cache options</a>."
 msgstr ""
 
-#: offline-shell-admin.php:80
+#: wp-offline-shell-admin.php:92
 msgid "A matching minified file was found, deferring to minified asset."
 msgstr ""
 
-#: offline-shell-admin.php:99
+#: wp-offline-shell-admin.php:100
+msgid "%s is a standard WordPress theme file."
+msgstr ""
+
+#: wp-offline-shell-admin.php:111
 msgid "%s is a standard WordPress theme file only used in admin."
 msgstr ""
 
-#: offline-shell-admin.php:110
+#: wp-offline-shell-admin.php:122
 msgid "%s is likely for legacy Internet Explorer browsers."
 msgstr ""
 
-#: offline-shell-admin.php:119
+#: wp-offline-shell-admin.php:131
 msgid "woff2 is high performing and woff is a globally supported fallback"
 msgstr ""
 
-#: offline-shell-admin.php:127
+#: wp-offline-shell-admin.php:139
 msgid "Main or secondary level assets are likely important in most themes"
 msgstr ""
 
-#: offline-shell-admin.php:149
+#: wp-offline-shell-admin.php:155
 msgid "Your settings have been saved."
 msgstr ""
 
-#: offline-shell-admin.php:153
-msgid "WordPress Service Worker Cache"
-msgstr ""
-
-#: offline-shell-admin.php:155
+#: wp-offline-shell-admin.php:161
 msgid ""
-"WordPress Service Worker Cache is a utility that harnesses the power of the "
-"<a href=\"https://serviceworke.rs\" target=\"_blank\">ServiceWorker API</a> "
-"to cache frequently used assets for the purposes of performance and offline "
-"viewing."
+"Offline Shell is a utility that harnesses the power of the <a href=\"https://"
+"serviceworke.rs\" target=\"_blank\">ServiceWorker API</a> to cache "
+"frequently used assets for the purposes of performance and offline viewing."
 msgstr ""
 
-#: offline-shell-admin.php:160
-msgid "ServiceWorker Cache Settings"
+#: wp-offline-shell-admin.php:166
+msgid "Offline Shell Settings"
 msgstr ""
 
-#: offline-shell-admin.php:163
+#: wp-offline-shell-admin.php:169
 msgid "Enable Service Worker"
 msgstr ""
 
-#: offline-shell-admin.php:169
+#: wp-offline-shell-admin.php:175
 msgid "Enable Debug Messages"
 msgstr ""
 
-#: offline-shell-admin.php:176
+#: wp-offline-shell-admin.php:182
 msgid "Theme Files to Cache"
 msgstr ""
 
-#: offline-shell-admin.php:178
+#: wp-offline-shell-admin.php:184
 msgid ""
 "Select theme assets (typically JavaScript, CSS, fonts, and image files) that "
 "are used on a majority of pages."
 msgstr ""
 
-#: offline-shell-admin.php:179
+#: wp-offline-shell-admin.php:185
 msgid "Select All Files"
 msgstr ""
 
-#: offline-shell-admin.php:180
+#: wp-offline-shell-admin.php:186
 msgid "Clear All Files"
 msgstr ""
 
-#: offline-shell-admin.php:181
+#: wp-offline-shell-admin.php:187
 msgid "Files Suggested: "
 msgstr ""
 
-#: offline-shell-admin.php:181
+#: wp-offline-shell-admin.php:187
 msgid "Suggest Files"
 msgstr ""
 
-#: offline-shell-admin.php:181
+#: wp-offline-shell-admin.php:187
 msgid "beta"
 msgstr ""
 
-#: offline-shell-admin.php:190
+#: wp-offline-shell-admin.php:191
+msgid "Loading theme files..."
+msgstr ""
+
+#: wp-offline-shell-admin.php:196
+msgid "Save Changes"
+msgstr ""
+
+#: wp-offline-shell-admin.php:308
 msgid "CSS Files"
 msgstr ""
 
-#: offline-shell-admin.php:191
+#: wp-offline-shell-admin.php:309
 msgid "JavaScript Files"
 msgstr ""
 
-#: offline-shell-admin.php:192
+#: wp-offline-shell-admin.php:310
 msgid "Font Files"
 msgstr ""
 
-#: offline-shell-admin.php:193
+#: wp-offline-shell-admin.php:311
 msgid "Image Files"
 msgstr ""
 
-#: offline-shell-admin.php:194
+#: wp-offline-shell-admin.php:312
 msgid "Other Files"
 msgstr ""
 
-#: offline-shell-admin.php:234
+#: wp-offline-shell-admin.php:352
 msgid ""
 "The following assets, especially <code>.php</code> files, have no value in "
 "being cached directly by service workers."
 msgstr ""
 
-#: offline-shell-admin.php:260
+#: wp-offline-shell-admin.php:378
 msgid "No matching files found."
 msgstr ""
 
-#: offline-shell-admin.php:264
-msgid "Save Changes"
-msgstr ""
-
-#: offline-shell-admin.php:268
-msgid "Click the button below to clear any caches created by this plugin."
-msgstr ""
-
-#: offline-shell-admin.php:269
-msgid "Clear Local Cache"
-msgstr ""
-
-#. Plugin Name of the plugin/theme
-msgid "WP Service Worker Cache"
-msgstr ""
-
 #. Plugin URI of the plugin/theme
-msgid "https://github.com/darkwing/offline-shell"
+msgid "https://github.com/mozilla/offline-shell"
 msgstr ""
 
 #. Description of the plugin/theme
