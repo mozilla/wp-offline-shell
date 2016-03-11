@@ -2,7 +2,7 @@
 # This file is distributed under the same license as the Offline Shell package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Offline Shell 123.213.123\n"
+"Project-Id-Version: Offline Shell 0.3.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/wp-offline-shell\n"
 "POT-Creation-Date: 2016-03-11 12:11:16+00:00\n"
 "MIME-Version: 1.0\n"
