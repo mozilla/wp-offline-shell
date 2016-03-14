@@ -96,6 +96,14 @@ describe('tests', function() {
 
   });
 
+  it('ignoreSearch works properly', function() {
+    // Ensure URLs are modified when local and not modified when cross-origin
+    assert.equal('/images/logo.png', wpOfflineShell.ignoreSearch(new Request('/images/logo.png?preview')).pathname);
+
+    var crossOriginImage = 'https://davidwalsh.name/images/logo.png?preview';
+    assert.equal(crossOriginImage, wpOfflineShell.ignoreSearch(new Request(crossOriginImage)).toString());
+  });
+
   it('Debug option works properly', function() {
     // We don't want to muddle up the user's console if they option isn't on
     console.log = console.warn = sinon.spy();
