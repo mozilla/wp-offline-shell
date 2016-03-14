@@ -9,7 +9,7 @@ class Offline_Shell_DB {
     // The "style.css" file is a standard WordPress file, so we can safely assume this exists
     'offline_shell_files' => array('styles.css'),
     // Create an initial SW version
-    'offline_shell_version' => '0.2',
+    'offline_shell_version' => '0.3.0',
     // Setting debug initially will help the user understand what the SW is doing via the console
     'offline_shell_debug' => 0,
     // Whether to race cache-network or only cache

@@ -4,15 +4,15 @@ Donate link: https://davidwalsh.name
 Tags: performance, cache, offline
 Requires at least: 3.0.1
 Tested up to: 4.4.2
-Stable tag: 0.2
+Stable tag: 0.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A WordPress plugin for caching theme assets via a service worker for the sake of performance and offline functionality.
+A WordPress plugin for caching theme assets via the [ServiceWorker API](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers) to improve performance and make them available offline or on slow connections.
 
 == Description ==
 
-Offline Shell is a WordPress plugin for using the [ServiceWorker API](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers "Learn more") to cache theme files for performance and offline purposes.
+Offline Shell is a WordPress plugin which utilizes the client side [ServiceWorker API](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers "Learn more") to cache theme files for performance and offline purposes.
 
 The WordPress admin can select which files to cache, update the cache list at any time, and see their site performance improve while ensuring important assets are available offline.
 
@@ -43,7 +43,19 @@ It's best to update the plugin file options when you've added a new file to your
 
 Of course! Service Workers are an emerging technology so this plugin should be updated often based on feedback from developers using WordPress in different ways
 
+== Screenshots ==
+
+1. File selection screen -- the admin may choose which files to cache
+2. The Network tab of DevTools shows that the files have been retrieved from cache instead of network
+3. Debug displays in the console so you know what is and isn't being cached
+
 == Changelog ==
+
+= 0.3.0 =
+* Don't try to normalize request because it may cause a illegal referrer problem
+
+= 0.2.2 =
+* Loading file listing via AJAX for faster admin load
 
 = 0.1.1 =
 * Adding logic to clear storage for old URLs within the service worker

@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/mozilla/wp-offline-shell.svg?branch=master)](https://travis-ci.org/mozilla/wp-offline-shell)
+[![WordPress plugin](https://img.shields.io/wordpress/plugin/v/offline-shell.svg)](https://wordpress.org/plugins/offline-shell/) [![WordPress](https://img.shields.io/wordpress/plugin/dt/offline-shell.svg)](https://wordpress.org/plugins/offline-shell/)
 
 # Offline Shell
 A WordPress plugin for caching theme assets via a service worker for the sake of performance and offline functionality.
