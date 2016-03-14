@@ -18,7 +18,7 @@
     // Name of the cache the plugin will use
     cacheName: storageKey,
     // Method to cleanse a URL before comparing and caching
-    normalizeAndAnonymize: function(request) {
+    ignoreSearch: function(request) {
       var url = new URL(request.url);
       if (url.origin !== location.origin) {
         return request.url;
@@ -101,7 +101,7 @@
     onFetch: function(event) {
       var request = event.request;
 
-      var url = this.normalizeAndAnonymize(request);
+      var url = this.ignoreSearch(request);
       if (!this.shouldBeHandled(request.method, url)) {
         return;
       }
