@@ -3,13 +3,14 @@
 class Offline_Shell_DB {
 
   private static $instance;
+  const VERSION = '0.3.0';
   public static $options = array(
     // For v1 we'll prompt the user enable the plugin manually upon activation
     'offline_shell_enabled' => 0,
     // The "style.css" file is a standard WordPress file, so we can safely assume this exists
     'offline_shell_files' => array('styles.css'),
     // Create an initial SW version
-    'offline_shell_version' => '0.3.0',
+    'offline_shell_version' => self::VERSION,
     // Setting debug initially will help the user understand what the SW is doing via the console
     'offline_shell_debug' => 0
   );
@@ -38,8 +39,7 @@ class Offline_Shell_DB {
   }
 
   public static function update() {
-    $current_version = self::$options['offline_shell_version'];
-    if($current_version == get_option('offline_shell_version')) {
+    if(self::VERSION == get_option('offline_shell_version')) {
       return;
     }
 
@@ -48,7 +48,7 @@ class Offline_Shell_DB {
       add_option($option, $default);
     }
 
-    update_option('offline_shell_version', $current_version);
+    update_option('offline_shell_version', self::VERSION);
   }
 
 }
