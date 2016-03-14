@@ -11,6 +11,8 @@
     urls: $urls,
     // Allowed to use console functions?
     debug: $debug,
+    // Race cache-network or only cache?
+    raceEnabled: $raceEnabled,
     // Instance of localForage to save urls and hashes to see if anything has changed
     storage: localforage.createInstance({ name: storageKey }),
     // Name of the cache the plugin will use
@@ -104,19 +106,58 @@
         return;
       }
 
-      event.respondWith(
-        caches.match(url).then(response => {
+      var gotFromCache = false;
+      var gotFromNetwork = false;
+
+      var fromCache = caches.match(url)
+      .then(response => {
+        gotFromCache = true;
+        return response;
+      })
+      .catch(e => {
+        this.warn('[fetch] error: ', e);
+      });
+
+      var promise;
+      if (this.raceEnabled) {
+        var fromNetwork = fetch(request)
+        .then(response => {
+          gotFromNetwork = true;
+          return response;
+        });
+
+        promise = Promise.race([ fromCache, fromNetwork ])
+        .then(response => {
+          if (gotFromCache) {
             if (response) {
               this.log('[fetch] Cache hit, returning from ServiceWorker cache: ', event.request.url);
-              return response;
+            } else {
+              this.log('[fetch] Cache miss, retrieving from server: ', event.request.url);
             }
-            this.log('[fetch] Cache miss, retrieving from server: ', event.request.url);
-            return fetch(event.request);
-          })
-          .catch(e => {
-            this.warn('[fetch] error: ', e);
-          })
-      );
+          } else {
+            this.log('[fetch] Retrieved from server: ', event.request.url);
+          }
+
+          // If we couldn't find the resource in the cache, we have to wait for the
+          // network request to finish.
+          return response || fromNetwork;
+        });
+      } else {
+        promise = fromCache
+        .then(response => {
+          if (response) {
+            this.log('[fetch] Cache hit, returning from ServiceWorker cache: ', event.request.url);
+            return response;
+          }
+
+          // If we couldn't find the resource in the cache, we have to perform a
+          // network request.
+          this.log('[fetch] Cache miss, retrieving from server: ', event.request.url);
+          return fetch(request);
+        });
+      }
+
+      event.respondWith(promise);
     }
   };
 

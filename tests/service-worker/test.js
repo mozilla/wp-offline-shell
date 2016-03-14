@@ -11,6 +11,7 @@ describe('tests', function() {
       'http://localhost:9876/karma.js': '2222'
     };
     self.$debug = 1;
+    self.$raceEnabled = 0;
 
     importScripts('/base/wp-offline-shell/lib/service-worker.js');
 

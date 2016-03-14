@@ -44,6 +44,9 @@ class Offline_Shell_Admin {
     // Update "debug" status
     update_option('offline_shell_debug', isset($_POST['offline_shell_debug']) ? intval($_POST['offline_shell_debug']) : 0);
 
+    // Update "race enabled" status
+    update_option('offline_shell_race_enabled', isset($_POST['offline_shell_race_enabled']) ? intval($_POST['offline_shell_race_enabled']) : 0);
+
     // Update files to cache *only* if the file listing loaded properly
     if(isset($_POST['offline_shell_files_loaded']) && intval($_POST['offline_shell_files_loaded']) === 1) {
       $files = array();
@@ -183,6 +186,13 @@ class Offline_Shell_Admin {
       <th scope="row"><label for="offline_shell_debug"><?php _e('Enable Debug Messages', 'offline-shell'); ?></label></th>
       <td>
         <input type="checkbox" name="offline_shell_debug" id="offline_shell_debug" value="1" <?php if(intval(get_option('offline_shell_debug'))) echo 'checked'; ?> />
+      </td>
+    </tr>
+    <tr>
+      <th scope="row"><label for="offline_shell_race_enabled"><?php _e('Enable cache-network race', 'service-worker-cache'); ?></label></th>
+      <td>
+        <input type="checkbox" name="offline_shell_race_enabled" id="offline_shell_race_enabled" value="1" <?php if(intval(get_option('offline_shell_race_enabled'))) echo 'checked'; ?> />
+        <p class="description"><?php _e('Enable this option if you want the service worker to retrieve a response from the cache and the network at the same time, instead of only from the cache. This improves performance for users with fast connections, at the expense of an increased load on your server.'); ?></p>
       </td>
     </tr>
     </table>

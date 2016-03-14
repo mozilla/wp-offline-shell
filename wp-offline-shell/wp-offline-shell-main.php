@@ -46,6 +46,7 @@ class Offline_Shell_Main {
     $contents = str_replace('$name', self::$cache_name, $contents);
     $contents = str_replace('$urls', json_encode($urls), $contents);
     $contents = str_replace('$debug', intval(get_option('offline_shell_debug')), $contents);
+    $contents = str_replace('$raceEnabled', intval(get_option('offline_shell_race_enabled')), $contents);
     return $contents;
   }
 
