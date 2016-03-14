@@ -4,15 +4,10 @@ php:
   - 5.6
 addons:
   firefox: 'latest'
-  apt:
-    sources:
-    - google-chrome
-    packages:
-    - google-chrome-stable
 env:
   global:
   - FIREFOX_NIGHTLY_BIN=firefox
-  - CHROME_BIN=google-chrome-stable
+  - CHROME_BIN=chromium-browser
   matrix:
   - WP_VERSION=latest WP_MULTISITE=0
   - WP_VERSION=4.4.1 WP_MULTISITE=0

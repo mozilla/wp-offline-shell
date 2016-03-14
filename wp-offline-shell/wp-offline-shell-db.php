@@ -12,7 +12,9 @@ class Offline_Shell_DB {
     // Create an initial SW version
     'offline_shell_version' => self::VERSION,
     // Setting debug initially will help the user understand what the SW is doing via the console
-    'offline_shell_debug' => 0
+    'offline_shell_debug' => 0,
+    // Whether to race cache-network or only cache
+    'offline_shell_race_enabled' => 0,
   );
 
   public function __construct() {

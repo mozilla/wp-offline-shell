@@ -4,6 +4,7 @@ load_plugin_textdomain('offline-shell', false, dirname(plugin_basename(__FILE__)
 
 class Offline_Shell_Admin {
   private static $instance;
+  private $submitted = false;
 
   public function __construct() {
     add_action('admin_menu', array($this, 'on_admin_menu'));
@@ -32,6 +33,8 @@ class Offline_Shell_Admin {
       return false;
     }
 
+    $this->submitted = true;
+
     // Check nonce to avoid hacks
     check_admin_referer('offline-shell-admin');
 
@@ -40,6 +43,9 @@ class Offline_Shell_Admin {
 
     // Update "debug" status
     update_option('offline_shell_debug', isset($_POST['offline_shell_debug']) ? intval($_POST['offline_shell_debug']) : 0);
+
+    // Update "race enabled" status
+    update_option('offline_shell_race_enabled', isset($_POST['offline_shell_race_enabled']) ? intval($_POST['offline_shell_race_enabled']) : 0);
 
     // Update files to cache *only* if the file listing loaded properly
     if(isset($_POST['offline_shell_files_loaded']) && intval($_POST['offline_shell_files_loaded']) === 1) {
@@ -60,6 +66,11 @@ class Offline_Shell_Admin {
   }
 
   public function on_admin_notices() {
+    if (!current_user_can('manage_options')) {
+      // There's no point in showing notices to users that can't modify the options.
+      return;
+    }
+
     if(get_option('offline_shell_enabled') && !count(get_option('offline_shell_files'))) {
       echo '<div class="update-nag"><p>', sprintf(__('Offline Shell is enabled but no files have been selected for caching.  To take full advantage of this plugin, <a href="%s">please select files to cache</a>.', 'offline-shell'), admin_url('options-general.php?page=offline-shell-options')),'</p></div>';
     }
@@ -70,7 +81,8 @@ class Offline_Shell_Admin {
   }
 
   public function on_admin_menu() {
-    add_options_page(__('Offline Shell', 'offline-shell'), __('Offline Shell', 'offline-shell'), 'manage_options', 'offline-shell-options', array($this, 'options'));
+    $plugin_page = add_options_page(__('Offline Shell', 'offline-shell'), __('Offline Shell', 'offline-shell'), 'manage_options', 'offline-shell-options', array($this, 'options'));
+    add_action('admin_head-'. $plugin_page, array($this, 'process_options'));
   }
 
   public function on_switch_theme() {
@@ -144,13 +156,12 @@ class Offline_Shell_Admin {
   }
 
   function options() {
-    $submitted = $this->process_options();
 
 ?>
 
 <div class="wrap">
 
-  <?php if($submitted) { ?>
+  <?php if($this->submitted) { ?>
     <div class="updated">
       <p><?php _e('Your settings have been saved.', 'offline-shell'); ?></p>
     </div>
@@ -175,6 +186,13 @@ class Offline_Shell_Admin {
       <th scope="row"><label for="offline_shell_debug"><?php _e('Enable Debug Messages', 'offline-shell'); ?></label></th>
       <td>
         <input type="checkbox" name="offline_shell_debug" id="offline_shell_debug" value="1" <?php if(intval(get_option('offline_shell_debug'))) echo 'checked'; ?> />
+      </td>
+    </tr>
+    <tr>
+      <th scope="row"><label for="offline_shell_race_enabled"><?php _e('Enable cache-network race', 'service-worker-cache'); ?></label></th>
+      <td>
+        <input type="checkbox" name="offline_shell_race_enabled" id="offline_shell_race_enabled" value="1" <?php if(intval(get_option('offline_shell_race_enabled'))) echo 'checked'; ?> />
+        <p class="description"><?php _e('Enable this option if you want the service worker to retrieve a response from the cache and the network at the same time, instead of only from the cache. This improves performance for users with fast connections, at the expense of an increased load on your server.'); ?></p>
       </td>
     </tr>
     </table>
