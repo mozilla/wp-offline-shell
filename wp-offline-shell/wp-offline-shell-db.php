@@ -3,7 +3,7 @@
 class Offline_Shell_DB {
 
   private static $instance;
-  const VERSION = '0.3.0';
+  const VERSION = '0.4.0';
   public static $options = array(
     // For v1 we'll prompt the user enable the plugin manually upon activation
     'offline_shell_enabled' => 0,
