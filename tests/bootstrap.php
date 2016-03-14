@@ -8,7 +8,7 @@ if ( ! $_tests_dir ) {
 require_once $_tests_dir . '/includes/functions.php';
 
 function _manually_load_plugin() {
-    require dirname( dirname( __FILE__ ) ) . '/wp-offline-shell/wp-offline-shell.php';
+    require dirname( dirname( __FILE__ ) ) . '/build/wp-offline-shell.php';
 }
 tests_add_filter( 'muplugins_loaded', '_manually_load_plugin' );
 
