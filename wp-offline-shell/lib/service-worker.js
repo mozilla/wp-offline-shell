@@ -106,14 +106,13 @@
         return;
       }
 
+      var gotFromCache = false;
+      var gotFromNetwork = false;
+
       var fromCache = caches.match(url)
       .then(response => {
-        if (response) {
-          this.log('[fetch] Cache hit, returning from ServiceWorker cache: ', event.request.url);
-          return response;
-        }
-
-        this.log('[fetch] Cache miss, retrieving from server: ', event.request.url);
+        gotFromCache = true;
+        return response;
       })
       .catch(e => {
         this.warn('[fetch] error: ', e);
@@ -123,22 +122,38 @@
       if (this.raceEnabled) {
         var fromNetwork = fetch(request)
         .then(response => {
-          this.log('[fetch] Retrieved from server: ', event.request.url);
+          gotFromNetwork = true;
           return response;
         });
 
         promise = Promise.race([ fromCache, fromNetwork ])
-        .then(function(response) {
+        .then(response => {
+          if (gotFromCache) {
+            if (response) {
+              this.log('[fetch] Cache hit, returning from ServiceWorker cache: ', event.request.url);
+            } else {
+              this.log('[fetch] Cache miss, retrieving from server: ', event.request.url);
+            }
+          } else {
+            this.log('[fetch] Retrieved from server: ', event.request.url);
+          }
+
           // If we couldn't find the resource in the cache, we have to wait for the
           // network request to finish.
           return response || fromNetwork;
         });
       } else {
         promise = fromCache
-        .then(function(response) {
+        .then(response => {
+          if (response) {
+            this.log('[fetch] Cache hit, returning from ServiceWorker cache: ', event.request.url);
+            return response;
+          }
+
           // If we couldn't find the resource in the cache, we have to perform a
           // network request.
-          return response || fetch(request);
+          this.log('[fetch] Cache miss, retrieving from server: ', event.request.url);
+          return fetch(request);
         });
       }
 
