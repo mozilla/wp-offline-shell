@@ -10,7 +10,7 @@ reinstall: $(WP_CLI) build
 	$(WP_CLI) plugin install --activate $(PLUGIN_NAME).zip --path=$(WORDPRESS_PATH)
 
 build: $(COMPOSER) npm_install
-	$(COMPOSER) install
+	$(COMPOSER) install  --prefer-source --no-interaction
 	rm -rf build $(PLUGIN_NAME).zip
 	cp -r $(PLUGIN_NAME)/ build/
 	mkdir -p build/vendor/mozilla/wp-sw-manager

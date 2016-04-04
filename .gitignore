@@ -1,6 +1,5 @@
 vendor/
 tools/
-composer.lock
 node_modules/
 wp-offline-shell.zip
 build/

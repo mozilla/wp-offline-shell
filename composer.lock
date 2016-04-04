@@ -1,0 +1,51 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "hash": "8065be7dbc16d78c89f3a0eddfaca606",
+    "packages": [
+        {
+            "name": "mozilla/wp-sw-manager",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mozilla/wp-sw-manager.git",
+                "reference": "5d248ab5590b6e83ff23d7201d5b5f34b40c429f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mozilla/wp-sw-manager/zipball/5d248ab5590b6e83ff23d7201d5b5f34b40c429f",
+                "reference": "5d248ab5590b6e83ff23d7201d5b5f34b40c429f",
+                "shasum": ""
+            },
+            "type": "library",
+            "license": [
+                "GPLv2"
+            ],
+            "authors": [
+                {
+                    "name": "Salvador de la Puente",
+                    "email": "salva@mozilla.com"
+                }
+            ],
+            "description": "Service Worker infrastructure for WordPress plugins.",
+            "support": {
+                "source": "https://github.com/mozilla/wp-sw-manager/tree/master",
+                "issues": "https://github.com/mozilla/wp-sw-manager/issues"
+            },
+            "time": "2016-03-14 17:17:15"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "mozilla/wp-sw-manager": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}
