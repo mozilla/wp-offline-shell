@@ -3,7 +3,6 @@
 require_once(plugin_dir_path(__FILE__).'wp-offline-shell.php' );
 require_once(plugin_dir_path(__FILE__).'wp-offline-shell-db.php');
 require_once(plugin_dir_path(__FILE__).'wp-offline-shell-recommender.php');
-require_once(plugin_dir_path(__FILE__).'vendor/mozilla/wp-sw-manager/class-wp-sw-manager.php');
 
 class Offline_Shell_Main {
   private static $instance;

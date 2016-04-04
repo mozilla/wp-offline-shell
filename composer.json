@@ -10,5 +10,8 @@
     ],
     "require": {
         "mozilla/wp-sw-manager": "dev-master"
+    },
+    "autoload": {
+        "classmap": [ "vendor/mozilla/wp-sw-manager/" ]
     }
 }
