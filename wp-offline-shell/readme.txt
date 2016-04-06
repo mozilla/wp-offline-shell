@@ -8,7 +8,7 @@ Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-A WordPress plugin for caching theme assets via the [ServiceWorker API](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers) to improve performance and make them available offline or on slow connections.
+A WordPress plugin for caching theme assets via the ServiceWorker API to improve performance and make them available offline or on slow connections.
 
 == Description ==
 
