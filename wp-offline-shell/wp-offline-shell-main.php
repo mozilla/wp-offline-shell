@@ -9,7 +9,7 @@ class Offline_Shell_Main {
   public static $cache_name = '__offline-shell';
 
   public function __construct() {
-    WP_SW_Manager::get_manager()->sw()->add_content(array($this, 'write_sw'));
+    Mozilla\WP_SW_Manager::get_manager()->sw()->add_content(array($this, 'write_sw'));
   }
 
   public static function init() {
