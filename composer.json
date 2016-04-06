@@ -10,5 +10,6 @@
     ],
     "require": {
         "mozilla/wp-sw-manager": "dev-master"
-    }
+    },
+    "minimum-stability": "dev"
 }
