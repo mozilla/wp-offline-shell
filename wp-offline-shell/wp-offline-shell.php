@@ -9,6 +9,8 @@ Author: David Walsh
 Author URI:  https://davidwalsh.name
 */
 
+require_once(plugin_dir_path(__FILE__) . 'vendor/autoload.php');
+
 require_once(plugin_dir_path(__FILE__).'wp-offline-shell-main.php');
 require_once(plugin_dir_path(__FILE__).'wp-offline-shell-db.php');
 

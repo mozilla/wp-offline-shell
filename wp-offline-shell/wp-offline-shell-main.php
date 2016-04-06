@@ -3,14 +3,13 @@
 require_once(plugin_dir_path(__FILE__).'wp-offline-shell.php' );
 require_once(plugin_dir_path(__FILE__).'wp-offline-shell-db.php');
 require_once(plugin_dir_path(__FILE__).'wp-offline-shell-recommender.php');
-require_once(plugin_dir_path(__FILE__).'vendor/mozilla/wp-sw-manager/class-wp-sw-manager.php');
 
 class Offline_Shell_Main {
   private static $instance;
   public static $cache_name = '__offline-shell';
 
   public function __construct() {
-    WP_SW_Manager::get_manager()->sw()->add_content(array($this, 'write_sw'));
+    Mozilla\WP_SW_Manager::get_manager()->sw()->add_content(array($this, 'write_sw'));
   }
 
   public static function init() {

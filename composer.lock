@@ -4,23 +4,64 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "8065be7dbc16d78c89f3a0eddfaca606",
+    "hash": "993b8404e221ea2c7f951198380445aa",
     "packages": [
+        {
+            "name": "marco-c/wp_serve_file",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/marco-c/WP_Serve_File.git",
+                "reference": "4b1c0d812375e609d31342118cb886e12a235b9f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/marco-c/WP_Serve_File/zipball/4b1c0d812375e609d31342118cb886e12a235b9f",
+                "reference": "4b1c0d812375e609d31342118cb886e12a235b9f",
+                "shasum": ""
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mozilla\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPLv2"
+            ],
+            "authors": [
+                {
+                    "name": "Marco Castelluccio",
+                    "email": "mcastelluccio@mozilla.com"
+                }
+            ],
+            "description": "Class to serve dynamic files in WordPress with performance in mind.",
+            "time": "2016-04-04 19:09:54"
+        },
         {
             "name": "mozilla/wp-sw-manager",
             "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mozilla/wp-sw-manager.git",
-                "reference": "5d248ab5590b6e83ff23d7201d5b5f34b40c429f"
+                "reference": "cc42eee94c4e1ba1a77890500b6eb02eb52798bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mozilla/wp-sw-manager/zipball/5d248ab5590b6e83ff23d7201d5b5f34b40c429f",
-                "reference": "5d248ab5590b6e83ff23d7201d5b5f34b40c429f",
+                "url": "https://api.github.com/repos/mozilla/wp-sw-manager/zipball/cc42eee94c4e1ba1a77890500b6eb02eb52798bd",
+                "reference": "cc42eee94c4e1ba1a77890500b6eb02eb52798bd",
                 "shasum": ""
             },
+            "require": {
+                "marco-c/wp_serve_file": "dev-master"
+            },
             "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Mozilla\\": ""
+                }
+            },
             "license": [
                 "GPLv2"
             ],
@@ -35,12 +76,12 @@
                 "source": "https://github.com/mozilla/wp-sw-manager/tree/master",
                 "issues": "https://github.com/mozilla/wp-sw-manager/issues"
             },
-            "time": "2016-03-14 17:17:15"
+            "time": "2016-04-06 12:37:44"
         }
     ],
     "packages-dev": [],
     "aliases": [],
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "stability-flags": {
         "mozilla/wp-sw-manager": 20
     },
