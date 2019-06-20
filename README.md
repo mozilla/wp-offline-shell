@@ -1,3 +1,5 @@
+Note: this project has been archived, as development has stalled, and it isn't being actively maintained, nor used.
+
 [![Build Status](https://travis-ci.org/mozilla/wp-offline-shell.svg?branch=master)](https://travis-ci.org/mozilla/wp-offline-shell)
 [![WordPress plugin](https://img.shields.io/wordpress/plugin/v/offline-shell.svg)](https://wordpress.org/plugins/offline-shell/) [![WordPress](https://img.shields.io/wordpress/plugin/dt/offline-shell.svg)](https://wordpress.org/plugins/offline-shell/)
 
